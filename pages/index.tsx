@@ -9,20 +9,43 @@ const DATA = {
   rating: 4.5,
 }
 
-const Rating = () => {
+interface RatingProps {
+  rating: number
+}
+
+const Rating = (props: RatingProps) => {
+  const {rating} = props;
   return (
-      <p className='text-blue-500 font-bold'>{DATA.rating}</p>
+      <p className='text-blue-500 font-bold'>{rating}</p>
   )
 };
+
+interface ProductProps {
+  data: {
+    description: string,
+    thumbnailUrl: string,
+    thumbnailAlt: string,
+    rating: number
+  }
+}
+
+const Product = (props: ProductProps) => {
+  const {data} = props;
+  return(
+    <>
+      <img src={data.thumbnailUrl} alt={data.thumbnailAlt}/>
+      <p>{data.description}</p>
+      <Rating rating={data.rating} />
+    </>
+  )
+}
 
 const Home = () => {
   return (
   <div className='flex flex-col min-h-screen max-w-2xl'>
     <Header/>
     <main className='bg-gray-50 flex-grow px-4 py-2 grid gap-6 sm:grid-cols-2'>
-      <img src={DATA.thumbnailUrl} alt={DATA.thumbnailAlt}/>
-      <p>{DATA.description}</p>
-      <Rating></Rating>
+      <Product data={DATA} />
     </main>
     <Footer/>
   </div>  )
