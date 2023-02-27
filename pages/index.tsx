@@ -1,6 +1,7 @@
 import {Header} from '@/components/Header';
 import {Footer} from '@/components/Footer';
-import {ReactNode} from "react";
+import {Main} from "@/components/Main";
+import {Product} from "@/components/Product";
 
 
 const DATA = {
@@ -10,54 +11,13 @@ const DATA = {
   rating: 4.5,
 }
 
-interface RatingProps {
-  rating: number
-}
-
-const Rating = (props: RatingProps) => {
-  const {rating} = props;
-  return (
-      <p className='text-blue-500 font-bold'>{rating}</p>
-  )
-};
-
-interface ProductProps {
-  data: {
-    description: string,
-    thumbnailUrl: string,
-    thumbnailAlt: string,
-    rating: number
-  }
-}
-
-const Product = (props: ProductProps) => {
-  const {data} = props;
-  return(
-    <>
-      <img src={data.thumbnailUrl} alt={data.thumbnailAlt}/>
-      <p>{data.description}</p>
-      <Rating rating={data.rating} />
-    </>
-  )
-}
-
-interface MainProps {
-  children: ReactNode
-}
-
-const Main = (props: MainProps) => {
-  const {children} = props;
-  return (
-      <main className='bg-gray-50 flex-grow px-4 py-2 grid gap-6 sm:grid-cols-2'>
-        {children}
-      </main>
-  )
-}
 const Home = () => {
   return (
   <div className='flex flex-col min-h-screen max-w-2xl'>
     <Header/>
-    <Main><Product data={DATA} /></Main>
+    <Main>
+      <Product data={DATA} />
+    </Main>
     <Footer/>
   </div>  )
 }
