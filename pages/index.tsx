@@ -11,7 +11,7 @@ const DATA = {
   rating: 4.5,
 }
 
-const Home = () => {
+const HomePage = () => {
   return (
   <div className='flex flex-col min-h-screen max-w-2xl'>
     <Header/>
@@ -22,4 +22,4 @@ const Home = () => {
   </div>  )
 }
 
-export default Home;
+export default HomePage;
