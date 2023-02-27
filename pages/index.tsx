@@ -1,5 +1,6 @@
 import {Header} from '@/components/Header';
 import {Footer} from '@/components/Footer';
+import {ReactNode} from "react";
 
 
 const DATA = {
@@ -40,13 +41,23 @@ const Product = (props: ProductProps) => {
   )
 }
 
+interface MainProps {
+  children: ReactNode
+}
+
+const Main = (props: MainProps) => {
+  const {children} = props;
+  return (
+      <main className='bg-gray-50 flex-grow px-4 py-2 grid gap-6 sm:grid-cols-2'>
+        {children}
+      </main>
+  )
+}
 const Home = () => {
   return (
   <div className='flex flex-col min-h-screen max-w-2xl'>
     <Header/>
-    <main className='bg-gray-50 flex-grow px-4 py-2 grid gap-6 sm:grid-cols-2'>
-      <Product data={DATA} />
-    </main>
+    <Main><Product data={DATA} /></Main>
     <Footer/>
   </div>  )
 }
