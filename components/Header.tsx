@@ -4,6 +4,7 @@ import {useRouter} from "next/router";
 const links = [
     {label: 'Index', href: '/'},
     {label: 'About', href: '/about'},
+    {label: 'SSG Products', href: '/ssg-products'},
 ]
 
 type NavLinkProps = {
