@@ -1,9 +1,23 @@
 import {InferGetStaticPropsType} from "next";
+import {Product} from "@/components/Product";
 
 const SSGProductsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 	const {data} = props;
 return (
-    <p>{data[0].title}</p>
+    <ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+		{data.map(product => (
+			<li key={product.id}>
+				<Product data={
+					{
+						description: product.description,
+						rating: product.rating.rate,
+						thumbnailAlt: product.description,
+						thumbnailUrl: product.image
+					}
+				} />
+			</li>
+		))}
+	</ul>
 )
 }
 
