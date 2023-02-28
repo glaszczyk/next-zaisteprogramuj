@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {Product} from "@/components/Product";
+import {ProductListItem} from "@/components/ProductDetails";
 
 const getProducts =async () => {
   const response = await fetch('https://fakestoreapi.com/products/');
@@ -23,12 +23,10 @@ const CSRProductsPage = () => {
       <ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
         {data.map(product => (
             <li key={product.id} className='p-4 shadow-lg border-2 rounded-md'>
-              <Product data={{
+              <ProductListItem data={{
                 title: product.title,
-                rating: product.rating.rate,
                 thumbnailUrl: product.image,
                 thumbnailAlt: product.description,
-                description: product.description
               }} />
             </li>
         ))}

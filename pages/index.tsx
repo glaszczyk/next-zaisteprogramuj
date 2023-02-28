@@ -1,7 +1,7 @@
 import {Header} from '@/components/Header';
 import {Footer} from '@/components/Footer';
 import {Main} from "@/components/Main";
-import {Product} from "@/components/Product";
+import {ProductDetails} from "@/components/ProductDetails";
 
 
 const DATA = {
@@ -17,7 +17,7 @@ const HomePage = () => {
   <div className='flex flex-col min-h-screen max-w-2xl'>
     <Header/>
     <Main>
-      <Product data={DATA} />
+      <ProductDetails data={DATA} />
     </Main>
     <Footer/>
   </div>  )
