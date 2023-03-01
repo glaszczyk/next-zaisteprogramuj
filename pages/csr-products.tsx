@@ -20,10 +20,10 @@ interface ProductListProps {
 const ProductList = (props: ProductListProps) => {
     const {data, isLoading, error, onClick} = props
     if (isLoading) {
-        return <p>…Loading</p>
+        return <p className='bg-gray-100'>…Loading</p>
     }
     if (!data || error) {
-        return <p>Something went wrong</p>
+        return <p className='bg-gray-100'>Something went wrong</p>
     }
     return (
         <ul className='grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
@@ -47,9 +47,11 @@ const ProductList = (props: ProductListProps) => {
     )
 }
 
+type ViewType = 'list' | 'item';
+
 const CsrProductsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [view, setView] = useState<'list' | 'item'>('list');
+    const [view, setView] = useState<ViewType>('list');
     const [selectedItem, setSelectedItem] = useState({} as StoreApiResponse);
     const {data, error, isLoading} = useQuery(['products', currentPage], () => fetchProducts(currentPage));
 
@@ -68,7 +70,7 @@ const CsrProductsPage = () => {
 
     if (view === 'list') {
         return (
-            <div>
+            <div className='bg-gray-100 p-4'>
                 <Pagination current={currentPage} siblings={2} last={10}
                             onClick={(newPage) => setCurrentPage(newPage)}/>
                 <ProductList isLoading={isLoading} data={data} onClick={handleSelectProduct} error={error}/>
@@ -78,8 +80,8 @@ const CsrProductsPage = () => {
 
     if (view === 'item') {
         return (
-            <div>
-                <button onClick={handleBack}>Go back to the list</button>
+            <div className='bg-gray-100 p-4'>
+            <button onClick={handleBack}>Go back to the list</button>
                 <ProductDetailsCSR data={selectedItem}/>
             </div>
         )

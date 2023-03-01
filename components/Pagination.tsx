@@ -44,13 +44,14 @@ const PaginationButton = (props: PaginationButtonProps) => {
     const {children, current = false, disabled=false, onClick, value} = props;
     const gapButton = value.type === 'gap';
     const buttonWidth = (typeof value.type === 'number' || gapButton) ? 'min-w-[3rem]' : 'min-w-[5rem]'
-    const currentClassname = current ? 'bg-blue-500 text-white' : ''
+    const currentClassname = current ? 'bg-blue-500 text-white' : 'bg-white'
     const borderClassname = gapButton ? 'border-none' : 'border-2 border-grey-200'
     const disabledClassname = disabled ? 'bg-gray-200 hover:border-grey-200' : 'hover:border-2 hover:border-blue-900';
-    const classNames = `p-2  rounded-md ${borderClassname} ${disabledClassname} ${buttonWidth} ${currentClassname}`;
+    const classNames = `p-2 rounded-md ${borderClassname} ${disabledClassname} ${buttonWidth} ${currentClassname}`;
+    const gapClassNames = `p-2 rounded-md ${borderClassname} ${buttonWidth} bg-transparent flex justify-center`;
 
     if (value.type === 'gap') {
-        return <p className={classNames} onClick={() => onClick(value)}>{children}</p>
+        return <p className={gapClassNames} onClick={() => onClick(value)}>{children}</p>
     }
     return (
         <button disabled={disabled} className={classNames} onClick={() => onClick(value)}>{children}</button>
@@ -112,7 +113,7 @@ export const Pagination = (props: PaginationProps) => {
     const buttons = getPages(current, siblings, last);
 
     return (
-      <nav className='flex gap-1'>
+      <nav className='flex gap-1 pt-4 pb-4'>
           <PaginationButton disabled={current===1} value={prevPageButton} onClick={handlePageChange}>{prevPageButton.value}</PaginationButton>
           {buttons.map((button, idx) => (
               <PaginationButton
