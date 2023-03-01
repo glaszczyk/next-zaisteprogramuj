@@ -1,33 +1,54 @@
 import {ReactNode} from "react";
 
+
+const getRange = (start: number, end: number) => {
+    const result = [];
+    for (let i = start; i <= end ; i++) {
+        result.push(i);
+    }
+    return result
+}
+
+const calculateLimits = (current: number, siblings: number) => {
+    if (current <= siblings * 2 + 1) {
+        return {start: 1, end: siblings * 2 + 3 }
+    }
+    return {start: current-siblings-1, end: current+siblings + 1 }
+}
+
 interface PaginationButtonProps {
     children: ReactNode,
     current?: boolean,
-    value: PageType,
-    onClick: (page: PageType) => void
+    value: PageValue,
+    onClick: (page: PageValue) => void
 }
 
 const PaginationButton = (props: PaginationButtonProps) => {
     const {children, current = false, onClick, value} = props;
-    const classNames = `px-4 py-2 border-2 rounded-md hover:border-blue-900 hover:border-2 ${current ? 'bg-blue-500 text-white' : ''}`;
+
+    const buttonWidth = (typeof value === 'number' || value === 'gap') ? 'min-w-[3rem]' : 'min-w-[5rem]'
+    const currentClassname = current ? 'bg-blue-500 text-white' : ''
+    const classNames = `p-2 border-2 rounded-md hover:border-blue-900 hover:border-2 ${buttonWidth} ${currentClassname}`;
+
     return (
         <button className={classNames} onClick={() => onClick(value)}>{children}</button>
     )
 }
 
-type PageType = 'prev' | 'next' | number
+type PageValue = 'prev' | 'next' | 'gap' | number
 
 interface PageButton {
-    value: PageType
+    value: PageValue,
 }
 
 interface PaginationProps {
     current: number,
+    siblings: number,
     onClick: (page: number) => void
 }
 
 export const Pagination = (props: PaginationProps) => {
-    const {current, onClick} = props;
+    const {current, siblings, onClick} = props;
     const prevPageButton: PageButton = {
         value: 'prev'
     }
@@ -35,10 +56,10 @@ export const Pagination = (props: PaginationProps) => {
         value: 'next'
     }
 
-    const pages = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const {start, end} = calculateLimits(current, siblings);
+    const pages = getRange(start, end);
 
-    const handlePageChange = (newPage: PageType) => {
-        console.log(newPage)
+    const handlePageChange = (newPage: PageValue) => {
         switch (newPage) {
             case 'prev': {
                 onClick(current - 1)
@@ -46,6 +67,9 @@ export const Pagination = (props: PaginationProps) => {
             }
             case 'next': {
                 onClick(current + 1)
+                break;
+            }
+            case 'gap': {
                 break;
             }
             default: {
