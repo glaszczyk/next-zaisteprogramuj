@@ -1,6 +1,8 @@
 import {Rating} from "@/components/Rating";
+import Link from "next/link";
 
 interface ProductDetails {
+    id: number;
     title: string;
     description: string;
     thumbnailUrl: string;
@@ -24,7 +26,7 @@ export const ProductDetails = (props: ProductDetailsProps) => {
     )
 }
 
-type ProductListItem = Pick<ProductDetails, 'title' | 'thumbnailUrl' | 'thumbnailAlt'>
+type ProductListItem = Pick<ProductDetails, 'id' | 'title' | 'thumbnailUrl' | 'thumbnailAlt'>
 
 interface ProductListItemProps {
     data: ProductListItem
@@ -35,7 +37,7 @@ export const ProductListItem = (props: ProductListItemProps) => {
     return (
         <>
             <img src={data.thumbnailUrl} alt={data.thumbnailAlt}/>
-            <h2 className='text-2xl font-bold pt-2 pb-1'>{data.title}</h2>
+            <h2 className='text-2xl font-bold pt-2 pb-1'><Link href={`/products/${data.id}`}>{data.title}</Link></h2>
         </>
     )
 }

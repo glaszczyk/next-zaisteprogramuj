@@ -24,6 +24,7 @@ const CSRProductsPage = () => {
         {data.map(product => (
             <li key={product.id} className='p-4 shadow-lg border-2 rounded-md'>
               <ProductListItem data={{
+                id: product.id,
                 title: product.title,
                 thumbnailUrl: product.image,
                 thumbnailAlt: product.description,
