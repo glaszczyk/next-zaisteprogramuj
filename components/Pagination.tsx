@@ -9,7 +9,7 @@ interface PaginationButtonProps {
 
 const PaginationButton = (props: PaginationButtonProps) => {
     const {children, current = false, onClick, value} = props;
-    const classNames = `px-4 py-2 border rounded-md bac ${current ? 'bg-blue-500 text-white' : ''}`;
+    const classNames = `px-4 py-2 border-2 rounded-md hover:border-blue-900 hover:border-2 ${current ? 'bg-blue-500 text-white' : ''}`;
     return (
         <button className={classNames} onClick={() => onClick(value)}>{children}</button>
     )
