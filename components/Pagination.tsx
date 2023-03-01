@@ -10,35 +10,48 @@ const getRange = (start: number, end: number) => {
 }
 
 const calculateLimits = (current: number, siblings: number) => {
-    if (current <= siblings * 2 + 1) {
-        return {start: 1, end: siblings * 2 + 3 }
+    if (current <= siblings * 2) {
+        return {start: 1, end: siblings * 2 + 2 }
     }
-    return {start: current-siblings-1, end: current+siblings + 1 }
+    return {start: current-siblings, end: current+siblings }
+}
+
+const getPages = (current: number, siblings: number): PageButton[] => {
+    const gap: PageButton = {type: 'gap', value: '...'};
+    const {start, end} = calculateLimits(current, siblings);
+    const range: PageButton[] = getRange(start, end).map(page => ({ type: page, value: page}))
+    if (current <= siblings * 2 ) {
+        return [...range, gap]
+    }
+    return [gap, ...range, gap];
 }
 
 interface PaginationButtonProps {
     children: ReactNode,
     current?: boolean,
-    value: PageValue,
-    onClick: (page: PageValue) => void
+    value: PageButton,
+    onClick: (page: PageButton) => void
 }
 
 const PaginationButton = (props: PaginationButtonProps) => {
     const {children, current = false, onClick, value} = props;
-
-    const buttonWidth = (typeof value === 'number' || value === 'gap') ? 'min-w-[3rem]' : 'min-w-[5rem]'
+    const gapButton = value.type === 'gap';
+    const buttonWidth = (typeof value.type === 'number' || gapButton) ? 'min-w-[3rem]' : 'min-w-[5rem]'
     const currentClassname = current ? 'bg-blue-500 text-white' : ''
-    const classNames = `p-2 border-2 rounded-md hover:border-blue-900 hover:border-2 ${buttonWidth} ${currentClassname}`;
+    const borderClassname = gapButton ? '' : 'border-2 hover:border-2 hover:border-blue-900'
+    const classNames = `p-2  rounded-md ${borderClassname} ${buttonWidth} ${currentClassname}`;
 
     return (
-        <button className={classNames} onClick={() => onClick(value)}>{children}</button>
+        <button disabled={gapButton} className={classNames} onClick={() => onClick(value)}>{children}</button>
     )
 }
 
-type PageValue = 'prev' | 'next' | 'gap' | number
+type PageType = 'prev' | 'next' | 'gap' | number
+type PageValue = 'Previous' | 'Next' | '...' | number
 
 interface PageButton {
-    value: PageValue,
+    type: PageType,
+    value: PageValue
 }
 
 interface PaginationProps {
@@ -50,17 +63,18 @@ interface PaginationProps {
 export const Pagination = (props: PaginationProps) => {
     const {current, siblings, onClick} = props;
     const prevPageButton: PageButton = {
-        value: 'prev'
+        type: 'prev',
+        value: 'Previous'
     }
     const nextPageButton: PageButton = {
-        value: 'next'
+        type: 'next',
+        value: 'Next'
     }
 
-    const {start, end} = calculateLimits(current, siblings);
-    const pages = getRange(start, end);
+    const pages = [prevPageButton, ...getPages(current, siblings), nextPageButton];
 
-    const handlePageChange = (newPage: PageValue) => {
-        switch (newPage) {
+    const handlePageChange = (button: PageButton) => {
+        switch (button.type) {
             case 'prev': {
                 onClick(current - 1)
                 break;
@@ -73,25 +87,25 @@ export const Pagination = (props: PaginationProps) => {
                 break;
             }
             default: {
-                onClick(newPage)
+                if (typeof button.value === 'number') {
+                onClick(button.value)
+                }
             }
         }
     }
 
   return (
       <nav className='flex gap-1'>
-        <PaginationButton onClick={handlePageChange} value={prevPageButton.value}>Previous</PaginationButton>
-          {pages.map((page) => (
+          {pages.map((page, idx) => (
               <PaginationButton
-                  key={`pagination-${page}`}
-                  current={current === page}
+                  key={`pagination-${page.value}-${idx}`}
+                  current={current === page.value}
                   value={page}
                   onClick={handlePageChange}
               >
-                  {page}
+                  {page.value}
               </PaginationButton>
           ))}
-        <PaginationButton value={nextPageButton.value} onClick={handlePageChange}>Next</PaginationButton>
       </nav>
   )
 }
