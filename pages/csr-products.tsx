@@ -1,5 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {ProductListItem} from "@/components/ProductDetails";
+import {Pagination} from "@/components/Pagination";
+import {useState} from "react";
 
 const getProducts =async () => {
   const response = await fetch('https://fakestoreapi.com/products/');
@@ -12,6 +14,11 @@ const getProducts =async () => {
 
 const CSRProductsPage = () => {
   const {data, error, isLoading} = useQuery({queryKey: ['products'], queryFn: getProducts})
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage)
+  }
 
   if (isLoading) {
     return (<p>…Loading</p>)
@@ -20,6 +27,8 @@ const CSRProductsPage = () => {
     return <p>Something went wrong…</p>
   }
   return (
+      <div>
+      <Pagination current={currentPage} onClick={handlePageChange}/>
       <ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
         {data.map(product => (
             <li key={product.id} className='p-4 shadow-lg border-2 rounded-md'>
@@ -32,6 +41,7 @@ const CSRProductsPage = () => {
             </li>
         ))}
       </ul>
+      </div>
   )
 }
 
