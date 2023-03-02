@@ -2,7 +2,7 @@ import {Rating} from "@/components/Rating";
 import Link from "next/link";
 
 interface ProductDetails {
-    id: number;
+    id: string;
     title: string;
     description: string;
     thumbnailUrl: string;

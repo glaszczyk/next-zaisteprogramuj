@@ -11,7 +11,7 @@ const ProductIdPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =>
       <div>
         <Link href='/'>Wróc na stronę główną</Link>
         <ProductDetails data={{
-        id: data.id,
+        id: `${data.id}`,
         title: data.title,
         rating: data.rating.rate,
         thumbnailAlt: data.description,
