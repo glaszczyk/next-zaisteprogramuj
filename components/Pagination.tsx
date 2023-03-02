@@ -49,8 +49,11 @@ const PaginationButton = (props: PaginationButtonProps) => {
     const disabledClassname = disabled ? 'bg-gray-200 hover:border-grey-200' : 'hover:border-2 hover:border-blue-900';
     const classNames = `p-2  rounded-md ${borderClassname} ${disabledClassname} ${buttonWidth} ${currentClassname}`;
 
+    if (value.type === 'gap') {
+        return <p className={classNames} onClick={() => onClick(value)}>{children}</p>
+    }
     return (
-        <button disabled={disabled || gapButton} className={classNames} onClick={() => onClick(value)}>{children}</button>
+        <button disabled={disabled} className={classNames} onClick={() => onClick(value)}>{children}</button>
     )
 }
 
