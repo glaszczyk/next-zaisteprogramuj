@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {ProductListItem} from "@/components/ProductDetails";
+import {FakeProductListItem} from "@/components/FakeProductDetails";
 import {Pagination} from "@/components/Pagination";
 import {useState} from "react";
 
@@ -32,7 +32,7 @@ const CSRFakeProductsPage = () => {
       <ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
         {data.map(product => (
             <li key={product.id} className='p-4 shadow-lg border-2 rounded-md'>
-              <ProductListItem data={{
+              <FakeProductListItem data={{
                 id: `${product.id}`,
                 title: product.title,
                 thumbnailUrl: product.image,

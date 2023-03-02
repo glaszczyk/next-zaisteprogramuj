@@ -1,5 +1,5 @@
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
-import {ProductDetails} from "@/components/ProductDetails";
+import {FakeProductDetails} from "@/components/FakeProductDetails";
 import Link from "next/link";
 
 const ProductIdPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
@@ -10,7 +10,7 @@ const ProductIdPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =>
   return (
       <div>
         <Link href='/'>Wróc na stronę główną</Link>
-        <ProductDetails data={{
+        <FakeProductDetails data={{
         id: `${data.id}`,
         title: data.title,
         rating: data.rating.rate,

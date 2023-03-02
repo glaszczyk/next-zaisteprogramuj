@@ -1,5 +1,5 @@
 import {InferGetStaticPropsType} from "next";
-import {ProductListItem} from "@/components/ProductDetails";
+import {FakeProductListItem} from "@/components/FakeProductDetails";
 
 const SSGFakeProductsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 	const {data} = props;
@@ -7,7 +7,7 @@ return (
     <ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
 		{data.map(product => (
 			<li key={product.id} className='p-4 shadow-lg border-2 rounded-md'>
-				<ProductListItem data={
+				<FakeProductListItem data={
 					{
 						id: `${product.id}`,
 						title: product.title,

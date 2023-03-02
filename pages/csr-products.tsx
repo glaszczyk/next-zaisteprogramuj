@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {ProductListItem} from "@/components/ProductDetails";
+import {FakeProductListItem} from "@/components/FakeProductDetails";
 
 const fetchProducts = async () => {
   const response = await fetch('https://naszsklep-api.vercel.app/api/products?take=25&offset=0');
@@ -20,7 +20,7 @@ const CsrProductsPage = () => {
   return (
       <ul>
       {
-        data.map(item => <ProductListItem key={item.id} data={{
+        data.map(item => <FakeProductListItem key={item.id} data={{
             id: item.id,
             title: item.title,
             thumbnailAlt: item.description,
