@@ -81,8 +81,8 @@ const CsrProductsPage = () => {
     if (view === 'item') {
         return (
             <div className='bg-gray-100 p-4'>
-            <button onClick={handleBack}>Go back to the list</button>
-                <ProductDetailsCSR data={selectedItem}/>
+            <button className='p-2 bg-white border-2 border-grey-200 rounded-md' onClick={handleBack}>Go back to the list</button>
+            <ProductDetailsCSR data={selectedItem}/>
             </div>
         )
     }

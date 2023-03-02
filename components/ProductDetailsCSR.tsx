@@ -20,10 +20,12 @@ interface ProductDetailsCSRProps  {
 export const ProductDetailsCSR = (props: ProductDetailsCSRProps) => {
     const {data} = props;
   return (
-      <div>
-          <img src={data.image} alt={data.description}/>
-          <h2>{data.title}</h2>
-          <p>{data.longDescription}</p>
+      <div className='mt-4 bg-white p-4 flex sm:w-full md:w-[75%] w-[50%] flex-col'>
+          <div className=''>
+            <img className='object-contain aspect-auto h-92 w-64' src={data.image} alt={data.description}/>
+          </div>
+          <h2 className='text-3xl font-bold pt-8 pb-4'>{data.title}</h2>
+          <p className='mb-4'>{data.longDescription}</p>
           <Rating rating={data.rating.rate} />
       </div>
   )

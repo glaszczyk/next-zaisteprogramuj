@@ -113,7 +113,7 @@ export const Pagination = (props: PaginationProps) => {
     const buttons = getPages(current, siblings, last);
 
     return (
-      <nav className='flex gap-1 pt-4 pb-4'>
+      <nav className='flex gap-1 pb-4'>
           <PaginationButton disabled={current===1} value={prevPageButton} onClick={handlePageChange}>{prevPageButton.value}</PaginationButton>
           {buttons.map((button, idx) => (
               <PaginationButton
