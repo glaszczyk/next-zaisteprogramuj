@@ -1,7 +1,7 @@
 import {InferGetStaticPropsType} from "next";
 import {ProductListItem} from "@/components/ProductDetails";
 
-const SSGProductsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+const SSGFakeProductsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 	const {data} = props;
 return (
     <ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
@@ -32,7 +32,7 @@ export const getStaticProps = async () => {
 	}
 }
 
-export default SSGProductsPage;
+export default SSGFakeProductsPage;
 
 interface  StoreApiResponse {
 	image: string;

@@ -4,8 +4,8 @@ import {useRouter} from "next/router";
 const links = [
     {label: 'Index', href: '/'},
     {label: 'About', href: '/about'},
-    {label: 'SSG Products', href: '/ssg-products'},
-    {label: 'CSR Products', href: '/csr-products'},
+    {label: 'SSG Fake', href: '/ssg-fake-products'},
+    {label: 'CSR Fake', href: '/csr-fake-products'},
 ]
 
 type NavLinkProps = {

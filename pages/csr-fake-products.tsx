@@ -12,7 +12,7 @@ const getProducts =async () => {
   return data;
 }
 
-const CSRProductsPage = () => {
+const CSRFakeProductsPage = () => {
   const {data, error, isLoading} = useQuery({queryKey: ['products'], queryFn: getProducts})
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -45,7 +45,7 @@ const CSRProductsPage = () => {
   )
 }
 
-export default CSRProductsPage
+export default CSRFakeProductsPage
 
 interface  StoreApiResponse {
   image: string;
