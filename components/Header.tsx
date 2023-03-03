@@ -4,6 +4,7 @@ import {useRouter} from "next/router";
 const links = [
     {label: 'Index', href: '/'},
     {label: 'About', href: '/about'},
+    {label: 'ISR Products', href: '/isr-product-list/1'},
     {label: 'SSG Products', href: '/product-list/1'},
     {label: 'CSR Products', href: '/csr-products'},
     {label: 'SSG Fake', href: '/ssg-fake-products'},

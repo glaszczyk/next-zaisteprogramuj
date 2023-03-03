@@ -1,0 +1,87 @@
+import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
+import {getRange, Pagination} from "@/components/Pagination";
+import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
+import {useState} from "react";
+import {ProductList} from "@/components/ProductList";
+
+type ViewType = 'list' | 'item';
+const siblings = 2;
+
+const IsrProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticProps> ) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [view, setView] = useState<ViewType>('list');
+  const [selectedItem, setSelectedItem] = useState({} as StoreApiResponse);
+  const {data} = props;
+  const link =  'isr-product-list';
+
+  const handleSelectProduct = (id: string) => {
+    const filtered = data?.filter(item => item.id === id);
+    if (filtered?.length) {
+      setSelectedItem({...filtered[0]});
+      setView('item');
+    }
+  }
+
+  const handleBack = () => {
+    setView('list');
+  }
+
+  if (view === 'list') {
+    return (
+        <div className='bg-gray-100 p-4'>
+          <Pagination current={currentPage} siblings={siblings} last={10} link={link}
+                      onClick={(newPage) => setCurrentPage(newPage)}/>
+          <ProductList data={data} onClick={handleSelectProduct} />
+        </div>
+    )
+  }
+
+  if (view === 'item') {
+    return (
+        <div className='bg-gray-100 p-4'>
+          <button className='p-2 bg-white border-2 border-grey-200 rounded-md' onClick={handleBack}>Go back to the list</button>
+          <ProductDetailsCSR data={selectedItem}/>
+        </div>
+    )
+  }
+}
+
+export default IsrProductListIdPage;
+
+export const getStaticPaths = () => {
+  return {
+    paths: getRange(1, siblings * 2 + 2).map(item => {
+      return {
+        params: {
+          isrProductListId: `${item}`
+        }
+      }
+    }),
+    fallback: 'blocking',
+
+  }
+}
+
+export const getStaticProps =  async ({params}: GetStaticPropsContext<InferGetStaticPathsType<typeof getStaticPaths>>) => {
+  if (!params?.isrProductListId) {
+    return {
+      props: {},
+      notFound: true
+    }
+  }
+  const offset = Number.parseInt(params?.isrProductListId) - 1;
+  const response = await  fetch(`https://naszsklep-api.vercel.app/api/products?take=25&offset=${offset}`);
+  const data: StoreApiResponse[] = await response.json();
+
+  return ({
+    props: {
+      data
+    }
+  })
+}
+
+export type InferGetStaticPathsType<T> = T extends () => {
+      paths: Array<{ params: infer R }>;
+    }
+    ? R
+    : never;
