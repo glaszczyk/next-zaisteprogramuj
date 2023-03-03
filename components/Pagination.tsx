@@ -82,15 +82,21 @@ export const Pagination = (props: PaginationProps) => {
         switch (button.type) {
             case 'prev': {
                 if (current > 1) {
-                    const prevButton = current - 1;
-                    onClick(prevButton)
+                    const prevPage = current - 1;
+                    if (link) {
+                        router.push(`/${link}/${prevPage}`)
+                    }
+                    onClick(prevPage)
                 }
                 break;
             }
             case 'next': {
                 if (last && current < last) {
-                    const nextButton = current + 1;
-                    onClick(nextButton)
+                    const nextPage = current + 1;
+                    if (link) {
+                        router.push(`/${link}/${nextPage}`)
+                    }
+                    onClick(nextPage)
                 }
                 break;
             }
@@ -99,6 +105,9 @@ export const Pagination = (props: PaginationProps) => {
             }
             default: {
                 if (typeof button.value === 'number') {
+                if (link) {
+                    router.push(`/${link}/${button.value}`)
+                }
                 onClick(button.value)
                 }
             }

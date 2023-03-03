@@ -1,33 +1,26 @@
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
 import {getRange, Pagination} from "@/components/Pagination";
 import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {ProductList} from "@/components/ProductList";
-import {useRouter} from "next/router";
 
 type ViewType = 'list' | 'item';
 
 const ProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticProps> ) => {
-  const router = useRouter()
   const [currentPage, setCurrentPage] = useState(1);
   const [view, setView] = useState<ViewType>('list');
   const [selectedItem, setSelectedItem] = useState({} as StoreApiResponse);
   const {data} = props;
   const link =  'product-list';
 
-  useEffect(() => {
-    if (link) {
-      router.push(`/${link}/${currentPage}`)
-    }
-  }, [currentPage, router])
   const handleSelectProduct = (id: string) => {
     const filtered = data?.filter(item => item.id === id);
     if (filtered?.length) {
       setSelectedItem({...filtered[0]});
       setView('item');
     }
-
   }
+
   const handleBack = () => {
     setView('list');
   }
