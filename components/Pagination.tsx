@@ -1,6 +1,7 @@
 import {ReactNode} from "react";
+import {useRouter} from "next/router";
 
-const getRange = (start: number, end: number) => {
+export const getRange = (start: number, end: number) => {
     const result = [];
     for (let i = start; i <= end ; i++) {
         result.push(i);
@@ -47,15 +48,14 @@ const PaginationButton = (props: PaginationButtonProps) => {
     const currentClassname = current ? 'bg-blue-500 text-white' : 'bg-white'
     const borderClassname = gapButton ? 'border-none' : 'border-2 border-grey-200'
     const disabledClassname = disabled ? 'bg-gray-200 hover:border-grey-200' : 'hover:border-2 hover:border-blue-900';
-    const classNames = `p-2 rounded-md ${borderClassname} ${disabledClassname} ${buttonWidth} ${currentClassname}`;
+    const classNames = `p-2 rounded-md flex justify-center ${borderClassname} ${disabledClassname} ${buttonWidth} ${currentClassname}`;
     const gapClassNames = `p-2 rounded-md ${borderClassname} ${buttonWidth} bg-transparent flex justify-center`;
 
     if (value.type === 'gap') {
-        return <p className={gapClassNames} onClick={() => onClick(value)}>{children}</p>
+        return <p className={gapClassNames}>{children}</p>
     }
     return (
-        <button disabled={disabled} className={classNames} onClick={() => onClick(value)}>{children}</button>
-    )
+        <button className={classNames} disabled={disabled} onClick={() => onClick(value)}>{children}</button>)
 }
 
 type PageType = 'prev' | 'next' | 'gap' | number
@@ -70,23 +70,27 @@ interface PaginationProps {
     current: number,
     siblings: number,
     last: number | null,
+    link?: string,
     onClick: (page: number) => void
 }
 
 export const Pagination = (props: PaginationProps) => {
-    const {current, siblings, last = null, onClick} = props;
+    const router = useRouter()
+    const {current, siblings, link, last = null, onClick} = props;
 
     const handlePageChange = (button: PageButton) => {
         switch (button.type) {
             case 'prev': {
                 if (current > 1) {
-                    onClick(current - 1)
+                    const prevButton = current - 1;
+                    onClick(prevButton)
                 }
                 break;
             }
             case 'next': {
                 if (last && current < last) {
-                    onClick(current + 1)
+                    const nextButton = current + 1;
+                    onClick(nextButton)
                 }
                 break;
             }
