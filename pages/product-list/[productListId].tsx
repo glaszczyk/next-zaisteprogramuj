@@ -1,17 +1,17 @@
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
-import {getRange, Pagination} from "@/components/Pagination";
+import {getRange, usePagination} from "@/components/usePagination";
 import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
 import {useState} from "react";
 import {ProductList} from "@/components/ProductList";
 
 type ViewType = 'list' | 'item';
+const link =  'product-list';
 
 const ProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticProps> ) => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const {Pagination} = usePagination(link)
   const [view, setView] = useState<ViewType>('list');
   const [selectedItem, setSelectedItem] = useState({} as StoreApiResponse);
   const {data} = props;
-  const link =  'product-list';
 
   const handleSelectProduct = (id: string) => {
     const filtered = data?.filter(item => item.id === id);
@@ -28,8 +28,7 @@ const ProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticProps>
   if (view === 'list') {
     return (
         <div className='bg-gray-100 p-4'>
-          <Pagination current={currentPage} siblings={2} last={10} link={link}
-                      onClick={(newPage) => setCurrentPage(newPage)}/>
+          <Pagination siblings={2} last={10}/>
           <ProductList data={data} onClick={handleSelectProduct} />
         </div>
     )

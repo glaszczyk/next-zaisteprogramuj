@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
-import {Pagination} from "@/components/Pagination";
+import {usePagination} from "@/components/usePagination";
 import {ProductList} from "@/components/ProductList";
 
 const fetchProducts = async (currentPage: number) => {
@@ -14,7 +14,7 @@ const fetchProducts = async (currentPage: number) => {
 type ViewType = 'list' | 'item';
 
 const CsrProductsPage = () => {
-    const [currentPage, setCurrentPage] = useState(1);
+    const {currentPage, Pagination} = usePagination();
     const [view, setView] = useState<ViewType>('list');
     const [selectedItem, setSelectedItem] = useState({} as StoreApiResponse);
     const {data, error, isLoading} = useQuery(['products', currentPage], () => fetchProducts(currentPage));
@@ -34,8 +34,7 @@ const CsrProductsPage = () => {
     if (view === 'list') {
         return (
             <div className='bg-gray-100 p-4'>
-                <Pagination current={currentPage} siblings={2} last={10}
-                            onClick={(newPage) => setCurrentPage(newPage)}/>
+                <Pagination  siblings={2} last={10} />
                 <ProductList isLoading={isLoading} data={data} onClick={handleSelectProduct} error={error}/>
             </div>
         )

@@ -1,20 +1,18 @@
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
-import {getRange, Pagination} from "@/components/Pagination";
+import {getRange, usePagination} from "@/components/usePagination";
 import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
 import {useState} from "react";
 import {ProductList} from "@/components/ProductList";
-import {useRouter} from "next/router";
 
 type ViewType = 'list' | 'item';
 const siblings = 2;
+const link =  'isr-product-list';
 
 const IsrProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticProps> ) => {
-  const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(Number.parseInt(router.query.isrProductListId as string));
+  const {Pagination} = usePagination(link);
   const [view, setView] = useState<ViewType>('list');
   const [selectedItem, setSelectedItem] = useState({} as StoreApiResponse);
   const {data, moreProducts} = props;
-  const link =  'isr-product-list';
 
   const handleSelectProduct = (id: string) => {
     const filtered = data?.filter(item => item.id === id);
@@ -31,8 +29,8 @@ const IsrProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticPro
   if (view === 'list') {
     return (
         <div className='bg-gray-100 p-4'>
-          <Pagination current={currentPage} siblings={siblings} link={link} moreProducts={moreProducts}
-                      onClick={(newPage) => setCurrentPage(newPage)}/>
+          <Pagination siblings={siblings} moreProducts={moreProducts}
+                      />
           <ProductList data={data} onClick={handleSelectProduct} />
         </div>
     )
