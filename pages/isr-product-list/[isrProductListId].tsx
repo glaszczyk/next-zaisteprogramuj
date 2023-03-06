@@ -3,12 +3,14 @@ import {getRange, Pagination} from "@/components/Pagination";
 import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
 import {useState} from "react";
 import {ProductList} from "@/components/ProductList";
+import {useRouter} from "next/router";
 
 type ViewType = 'list' | 'item';
 const siblings = 2;
 
 const IsrProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticProps> ) => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(Number.parseInt(router.query.isrProductListId as string));
   const [view, setView] = useState<ViewType>('list');
   const [selectedItem, setSelectedItem] = useState({} as StoreApiResponse);
   const {data, moreProducts} = props;
@@ -70,13 +72,18 @@ export const getStaticProps =  async ({params}: GetStaticPropsContext<InferGetSt
       notFound: true
     }
   }
-  console.log(params)
   const offset = Number.parseInt(params?.isrProductListId) - 1;
   let promises = [
     fetch(`https://naszsklep-api.vercel.app/api/products?take=25&offset=${offset}`).then(r => r.json()),
     fetch(`https://naszsklep-api.vercel.app/api/products?take=25&offset=${offset+1}`).then(r => r.json())
   ];
   const [first, second]: StoreApiResponse[][] = await Promise.all(promises);
+  if (first.length < 24 && second.length < 24) {
+    return {
+      props: {},
+      notFound: true
+    }
+  }
   if (first.length < 25 || first.length === 25 && second.length === 0) {
     moreProducts = false;
   }

@@ -80,6 +80,37 @@ export const Pagination = (props: PaginationProps) => {
     const {current, siblings, link, last = null, moreProducts, onClick} = props;
 
     const handlePageChange = (button: PageButton) => {
+        const currentRouterPage = Number.parseInt(router.query.isrProductListId as string);
+        console.log(currentRouterPage);
+        if (link) {
+            switch (button.type) {
+                case 'prev': {
+                    if (currentRouterPage > 1) {
+                        const prevPage = currentRouterPage - 1;
+                        router.push(`/${link}/${prevPage}`)
+                        onClick(prevPage)
+                    }
+                    break;
+                }
+                case 'next': {
+                    if (moreProducts) {
+                        const nextPage = currentRouterPage + 1;
+                        router.push(`/${link}/${nextPage}`)
+                        onClick(nextPage)
+                    }
+                    break;
+                }
+                case 'gap': {
+                    break;
+                }
+                default: {
+                    if (typeof button.value === 'number') {
+                        router.push(`/${link}/${button.value}`)
+                        onClick(button.value)
+                    }
+                }
+            }
+        }
         switch (button.type) {
             case 'prev': {
                 if (current > 1) {
