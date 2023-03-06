@@ -1,6 +1,28 @@
 import {ReactNode, useState} from "react";
 import {useRouter} from "next/router";
 
+type PageType = 'prev' | 'next' | 'gap' | number
+type PageValue = 'Previous' | 'Next' | '...' | number
+
+interface PageButton {
+    type: PageType,
+    value: PageValue
+}
+
+interface PaginationProps {
+    siblings: number,
+    last?: number | null,
+    moreProducts?: boolean,
+}
+
+interface PaginationButtonProps {
+    children: ReactNode,
+    current?: boolean,
+    disabled?: boolean,
+    value: PageButton,
+    onClick: (page: PageButton) => void
+}
+
 export const getRange = (start: number, end: number) => {
     const result = [];
     for (let i = start; i <= end ; i++) {
@@ -16,9 +38,13 @@ const calculateLimits = (current: number, siblings: number, last: number | null)
     return {start, end}
 }
 
+const pageButtonFrom = (type: PageType, value: PageValue): PageButton => {
+    return { type, value }
+}
+
 const getPages = (current: number, siblings: number, last: number | null): PageButton[] => {
     const boundary = siblings * 2 + 1;
-    const gap: PageButton = {type: 'gap', value: '...'};
+    const gap: PageButton = pageButtonFrom('gap', '...');
     const {start, end} = calculateLimits(current, siblings, last);
     const range: PageButton[] = getRange(start, end).map(page => ({ type: page, value: page}))
     if (current <= boundary) {
@@ -31,14 +57,6 @@ const getPages = (current: number, siblings: number, last: number | null): PageB
     }
     const pages = range.filter((item) => item.value >= current - siblings && item.value <= current + siblings)
     return [gap, ...pages, gap];
-}
-
-interface PaginationButtonProps {
-    children: ReactNode,
-    current?: boolean,
-    disabled?: boolean,
-    value: PageButton,
-    onClick: (page: PageButton) => void
 }
 
 const PaginationButton = (props: PaginationButtonProps) => {
@@ -58,22 +76,10 @@ const PaginationButton = (props: PaginationButtonProps) => {
         <button className={classNames} disabled={disabled} onClick={() => onClick(value)}>{children}</button>)
 }
 
-type PageType = 'prev' | 'next' | 'gap' | number
-type PageValue = 'Previous' | 'Next' | '...' | number
-
-interface PageButton {
-    type: PageType,
-    value: PageValue
-}
-
-interface PaginationProps {
-    siblings: number,
-    last?: number | null,
-    moreProducts?: boolean,
-}
 export const usePagination = (link?: string) => {
-    const router = useRouter()
-    const [currentPage, setCurrentPage] = useState(Number.parseInt(router.query.isrProductListId as string) || 1);
+    const router = useRouter();
+    const pageFromUrl = Number.parseInt(router.query.isrProductListId as string);
+    const [currentPage, setCurrentPage] = useState( pageFromUrl || 1);
 
     const Pagination = (props: PaginationProps) => {
         const {siblings, last = null, moreProducts} = props;
@@ -113,9 +119,6 @@ export const usePagination = (link?: string) => {
                 case 'prev': {
                     if (currentPage > 1) {
                         const prevPage = currentPage - 1;
-                        if (link) {
-                            router.push(`/${link}/${prevPage}`)
-                        }
                         setCurrentPage(prevPage)
                     }
                     break;
@@ -143,23 +146,17 @@ export const usePagination = (link?: string) => {
                 }
                 default: {
                     if (typeof button.value === 'number') {
-                    if (link) {
-                        router.push(`/${link}/${button.value}`)
-                    }
+                        if (link) {
+                            router.push(`/${link}/${button.value}`)
+                        }
                     setCurrentPage(button.value)
                     }
                 }
             }
         }
 
-        const prevPageButton: PageButton = {
-            type: 'prev',
-            value: 'Previous'
-        }
-        const nextPageButton: PageButton = {
-            type: 'next',
-            value: 'Next'
-        }
+        const prevPageButton = pageButtonFrom('prev', 'Previous');
+        const nextPageButton = pageButtonFrom('next', 'Next');
 
         const buttons = getPages(currentPage, siblings, last);
 
@@ -168,14 +165,14 @@ export const usePagination = (link?: string) => {
             return (
                 <nav className='flex gap-1 pb-4'>
                     <PaginationButton disabled={currentPage===1} value={prevPageButton} onClick={handlePageChange}>{prevPageButton.value}</PaginationButton>
-                        <PaginationButton
-                            key={`pagination-current`}
-                            current={true}
-                            value={{type: currentPage, value: currentPage}}
-                            onClick={handlePageChange}
-                        >
-                            {currentPage}
-                        </PaginationButton>
+                    <PaginationButton
+                        key={`pagination-current`}
+                        current={true}
+                        value={pageButtonFrom(currentPage, currentPage)}
+                        onClick={handlePageChange}
+                    >
+                        {currentPage}
+                    </PaginationButton>
                     <PaginationButton disabled={disableNext} value={nextPageButton} onClick={handlePageChange}>{nextPageButton.value}</PaginationButton>
                 </nav>
             )

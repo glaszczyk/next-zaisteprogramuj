@@ -1,8 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
 import {FakeProductListItem} from "@/components/FakeProductDetails";
-import {usePagination} from "@/components/usePagination";
+import {usePagination} from "@/hooks/usePagination";
 
-const getProducts =async () => {
+const getProducts = async () => {
   const response = await fetch('https://fakestoreapi.com/products/');
   if (!response.ok) {
     throw ('Something went wrong');

@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
-import {usePagination} from "@/components/usePagination";
+import {usePagination} from "@/hooks/usePagination";
 import {ProductList} from "@/components/ProductList";
 
 const fetchProducts = async (currentPage: number) => {

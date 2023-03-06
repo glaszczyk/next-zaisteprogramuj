@@ -1,5 +1,5 @@
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
-import {getRange, usePagination} from "@/components/usePagination";
+import {getRange, usePagination} from "@/hooks/usePagination";
 import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
 import {useState} from "react";
 import {ProductList} from "@/components/ProductList";
