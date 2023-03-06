@@ -69,14 +69,15 @@ interface PageButton {
 interface PaginationProps {
     current: number,
     siblings: number,
-    last: number | null,
+    last?: number | null,
+    moreProducts?: boolean,
     link?: string,
     onClick: (page: number) => void
 }
 
 export const Pagination = (props: PaginationProps) => {
     const router = useRouter()
-    const {current, siblings, link, last = null, onClick} = props;
+    const {current, siblings, link, last = null, moreProducts, onClick} = props;
 
     const handlePageChange = (button: PageButton) => {
         switch (button.type) {
@@ -97,6 +98,14 @@ export const Pagination = (props: PaginationProps) => {
                         router.push(`/${link}/${nextPage}`)
                     }
                     onClick(nextPage)
+                }
+                if (!last && moreProducts) {
+                    const nextPage = current + 1;
+                    if (link) {
+                        router.push(`/${link}/${nextPage}`)
+                    }
+                    onClick(nextPage)
+
                 }
                 break;
             }
@@ -125,6 +134,23 @@ export const Pagination = (props: PaginationProps) => {
 
     const buttons = getPages(current, siblings, last);
 
+    const disableNext = Boolean(last) ? current === last  : !moreProducts
+    if (!last) {
+        return (
+            <nav className='flex gap-1 pb-4'>
+                <PaginationButton disabled={current===1} value={prevPageButton} onClick={handlePageChange}>{prevPageButton.value}</PaginationButton>
+                    <PaginationButton
+                        key={`pagination-current`}
+                        current={true}
+                        value={{type: current, value: current}}
+                        onClick={handlePageChange}
+                    >
+                        {current}
+                    </PaginationButton>
+                <PaginationButton disabled={disableNext} value={nextPageButton} onClick={handlePageChange}>{nextPageButton.value}</PaginationButton>
+            </nav>
+        )
+    }
     return (
       <nav className='flex gap-1 pb-4'>
           <PaginationButton disabled={current===1} value={prevPageButton} onClick={handlePageChange}>{prevPageButton.value}</PaginationButton>
@@ -138,7 +164,7 @@ export const Pagination = (props: PaginationProps) => {
                   {button.value}
               </PaginationButton>
           ))}
-          <PaginationButton disabled={Boolean(last) && current === last} value={nextPageButton} onClick={handlePageChange}>{nextPageButton.value}</PaginationButton>
+          <PaginationButton disabled={disableNext} value={nextPageButton} onClick={handlePageChange}>{nextPageButton.value}</PaginationButton>
       </nav>
   )
 }

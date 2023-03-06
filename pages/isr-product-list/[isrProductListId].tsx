@@ -11,7 +11,7 @@ const IsrProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticPro
   const [currentPage, setCurrentPage] = useState(1);
   const [view, setView] = useState<ViewType>('list');
   const [selectedItem, setSelectedItem] = useState({} as StoreApiResponse);
-  const {data} = props;
+  const {data, moreProducts} = props;
   const link =  'isr-product-list';
 
   const handleSelectProduct = (id: string) => {
@@ -29,7 +29,7 @@ const IsrProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticPro
   if (view === 'list') {
     return (
         <div className='bg-gray-100 p-4'>
-          <Pagination current={currentPage} siblings={siblings} last={10} link={link}
+          <Pagination current={currentPage} siblings={siblings} link={link} moreProducts={moreProducts}
                       onClick={(newPage) => setCurrentPage(newPage)}/>
           <ProductList data={data} onClick={handleSelectProduct} />
         </div>
@@ -63,19 +63,29 @@ export const getStaticPaths = () => {
 }
 
 export const getStaticProps =  async ({params}: GetStaticPropsContext<InferGetStaticPathsType<typeof getStaticPaths>>) => {
+  let moreProducts = true;
   if (!params?.isrProductListId) {
     return {
       props: {},
       notFound: true
     }
   }
+  console.log(params)
   const offset = Number.parseInt(params?.isrProductListId) - 1;
-  const response = await  fetch(`https://naszsklep-api.vercel.app/api/products?take=25&offset=${offset}`);
-  const data: StoreApiResponse[] = await response.json();
+  let promises = [
+    fetch(`https://naszsklep-api.vercel.app/api/products?take=25&offset=${offset}`).then(r => r.json()),
+    fetch(`https://naszsklep-api.vercel.app/api/products?take=25&offset=${offset+1}`).then(r => r.json())
+  ];
+  const [first, second]: StoreApiResponse[][] = await Promise.all(promises);
+  if (first.length < 25 || first.length === 25 && second.length === 0) {
+    moreProducts = false;
+  }
+  const data: StoreApiResponse[] = first;
 
   return ({
     props: {
-      data
+      data,
+      moreProducts,
     }
   })
 }
