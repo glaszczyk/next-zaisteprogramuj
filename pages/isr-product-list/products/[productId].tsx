@@ -1,10 +1,22 @@
-import {StoreApiResponse} from "@/components/ProductDetailsCSR";
+import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
+import {useRouter} from "next/router";
 
 const ProductIdPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
     const {data} = props;
+    const router = useRouter();
+    if (!data) {
+        return (
+            <div className='bg-gray-100 p-4'>
+                <button className='p-2 bg-white border-2 border-grey-200 rounded-md' onClick={() => router.back()}>Go back to the list</button>
+                <div>Something went wrong!</div>
+            </div>
+        )}
     return (
-        <div>{data?.title}</div>
+        <div className='bg-gray-100 p-4'>
+            <button className='p-2 bg-white border-2 border-grey-200 rounded-md' onClick={() => router.back()}>Go back to the list</button>
+            <ProductDetailsCSR data={data} />
+        </div>
     )
 }
 
