@@ -1,49 +1,27 @@
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
 import {getRange, usePagination} from "@/hooks/usePagination";
-import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
-import {useState} from "react";
+import {StoreApiResponse} from "@/components/ProductDetailsCSR";
 import {ProductList} from "@/components/ProductList";
+import {useRouter} from "next/router";
 
-type ViewType = 'list' | 'item';
 const siblings = 2;
 const link =  'isr-product-list';
 
 const IsrProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticProps> ) => {
+  const router = useRouter();
   const {Pagination} = usePagination(link);
-  const [view, setView] = useState<ViewType>('list');
-  const [selectedItem, setSelectedItem] = useState({} as StoreApiResponse);
   const {data, moreProducts} = props;
 
   const handleSelectProduct = (id: string) => {
-    const filtered = data?.filter(item => item.id === id);
-    if (filtered?.length) {
-      setSelectedItem({...filtered[0]});
-      setView('item');
-    }
+    router.push(`./products/${id}`)
   }
 
-  const handleBack = () => {
-    setView('list');
-  }
-
-  if (view === 'list') {
     return (
         <div className='bg-gray-100 p-4'>
-          <Pagination siblings={siblings} moreProducts={moreProducts}
-                      />
+          <Pagination siblings={siblings} moreProducts={moreProducts}/>
           <ProductList data={data} onClick={handleSelectProduct} />
         </div>
     )
-  }
-
-  if (view === 'item') {
-    return (
-        <div className='bg-gray-100 p-4'>
-          <button className='p-2 bg-white border-2 border-grey-200 rounded-md' onClick={handleBack}>Go back to the list</button>
-          <ProductDetailsCSR data={selectedItem}/>
-        </div>
-    )
-  }
 }
 
 export default IsrProductListIdPage;
