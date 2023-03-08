@@ -1,8 +1,9 @@
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
-import {getRange, usePagination} from "@/hooks/usePagination";
-import {StoreApiResponse} from "@/components/ProductDetailsCSR";
-import {ProductList} from "@/components/ProductList";
 import {useRouter} from "next/router";
+import {getRange, usePagination} from "@/hooks/usePagination";
+import {ProductList} from "@/components/ProductList";
+import {StoreApiResponse} from "@/pages/product-list/[productListId]";
+import {fetchProductsFrom} from "@/helpers/fetchProductsFrom";
 
 const siblings = 2;
 const link =  'isr-product-list';
@@ -13,7 +14,7 @@ const IsrProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticPro
   const {data, moreProducts} = props;
 
   const handleSelectProduct = (id: string) => {
-    router.push(`./products/${id}`)
+    router.push(`./products/${id}`).then(() => null )
   }
 
     return (
@@ -41,6 +42,7 @@ export const getStaticPaths = () => {
 }
 
 export const getStaticProps =  async ({params}: GetStaticPropsContext<InferGetStaticPathsType<typeof getStaticPaths>>) => {
+  const productsFetcher = fetchProductsFrom('https://naszsklep-api.vercel.app/api/products');
   let moreProducts = true;
   if (!params?.isrProductListId) {
     return {
@@ -50,10 +52,10 @@ export const getStaticProps =  async ({params}: GetStaticPropsContext<InferGetSt
   }
   const offset = Number.parseInt(params?.isrProductListId) - 1;
   let promises = [
-    fetch(`https://naszsklep-api.vercel.app/api/products?take=25&offset=${offset}`).then(r => r.json()),
-    fetch(`https://naszsklep-api.vercel.app/api/products?take=25&offset=${offset+1}`).then(r => r.json())
+      await productsFetcher<StoreApiResponse>(25, offset),
+      await productsFetcher<StoreApiResponse>(25, offset+1),
   ];
-  const [first, second]: StoreApiResponse[][] = await Promise.all(promises);
+  const [first, second] = await Promise.all(promises);
   if (first.length < 24 && second.length < 24) {
     return {
       props: {},

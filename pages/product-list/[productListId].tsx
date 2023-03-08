@@ -1,11 +1,27 @@
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
 import {getRange, usePagination} from "@/hooks/usePagination";
-import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
+import {ProductDetailsCSR} from "@/components/ProductDetailsCSR";
 import {useState} from "react";
 import {ProductList} from "@/components/ProductList";
+import {fetchProductsFrom} from "@/helpers/fetchProductsFrom";
 
 type ViewType = 'list' | 'item';
 const link =  'product-list';
+const API_URL = 'https://naszsklep-api.vercel.app/api';
+
+export interface StoreApiResponse {
+  longDescription: string;
+  image: string;
+  price: number;
+  rating: {
+    rate: number;
+    count: number;
+  };
+  description: string;
+  id: string;
+  title: string;
+  category: string;
+}
 
 const ProductListIdPage = (props: InferGetStaticPropsType<typeof getStaticProps> ) => {
   const {Pagination} = usePagination(link)
@@ -67,8 +83,8 @@ export const getStaticProps =  async ({params}: GetStaticPropsContext<InferGetSt
     }
   }
   const offset = Number.parseInt(params?.productListId) - 1;
-  const response = await  fetch(`https://naszsklep-api.vercel.app/api/products?take=25&offset=${offset}`);
-  const data: StoreApiResponse[] = await response.json();
+  const getProducts = fetchProductsFrom(`${API_URL}/products`);
+  const data = await  getProducts<StoreApiResponse>(25, offset);
 
   return ({
     props: {

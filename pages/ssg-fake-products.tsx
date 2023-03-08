@@ -1,5 +1,6 @@
 import {InferGetStaticPropsType} from "next";
 import {FakeProductListItem} from "@/components/FakeProductDetails";
+import {fetchProductsFrom} from "@/helpers/fetchProductsFrom";
 
 const SSGFakeProductsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 	const {data} = props;
@@ -23,8 +24,8 @@ return (
 
 // called when app is building
 export const getStaticProps = async () => {
-	const response = await fetch('https://fakestoreapi.com/products/');
-	const data: StoreApiResponse[] = await response.json();
+	const fetcher = fetchProductsFrom('https://fakestoreapi.com/products/');
+	const data = await fetcher<StoreApiResponse>();
 	return {
 		props: {
 			data

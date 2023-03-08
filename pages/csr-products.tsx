@@ -1,14 +1,15 @@
 import {useState} from "react";
 import {useQuery} from "@tanstack/react-query";
-import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
 import {usePagination} from "@/hooks/usePagination";
 import {ProductList} from "@/components/ProductList";
+import {fetchProductsFrom} from "@/helpers/fetchProductsFrom";
+import {ProductDetailsCSR} from "@/components/ProductDetailsCSR";
+import {StoreApiResponse} from "@/pages/product-list/[productListId]";
 
 const fetchProducts = async (currentPage: number) => {
     const offset = currentPage - 1;
-    const response = await fetch(`https://naszsklep-api.vercel.app/api/products?take=25&offset=${offset}`);
-    const data: StoreApiResponse[] = await response.json();
-    return data;
+    const fetcher = fetchProductsFrom('https://naszsklep-api.vercel.app/api/products');
+    return await fetcher<StoreApiResponse>(25, offset);
 }
 
 type ViewType = 'list' | 'item';

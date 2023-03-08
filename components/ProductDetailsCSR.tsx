@@ -1,18 +1,5 @@
 import {Rating} from "@/components/Rating";
-
-export interface StoreApiResponse {
-    longDescription: string;
-    image: string;
-    price: number;
-    rating: {
-        rate: number;
-        count: number;
-    };
-    description: string;
-    id: string;
-    title: string;
-    category: string;
-}
+import {StoreApiResponse} from "@/pages/product-list/[productListId]";
 
 interface ProductDetailsCSRProps  {
     data: StoreApiResponse

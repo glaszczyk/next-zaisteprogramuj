@@ -1,6 +1,11 @@
-import {ProductDetailsCSR, StoreApiResponse} from "@/components/ProductDetailsCSR";
-import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
 import {useRouter} from "next/router";
+import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
+import {ProductDetailsCSR} from "@/components/ProductDetailsCSR";
+import {fetchProductFrom} from "@/helpers/fetchProductFrom";
+import {fetchProductsFrom} from "@/helpers/fetchProductsFrom";
+import {StoreApiResponse} from "@/pages/product-list/[productListId]";
+
+const API_URL = 'https://naszsklep-api.vercel.app/api/products';
 
 const ProductIdPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
     const {data} = props;
@@ -23,15 +28,14 @@ const ProductIdPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =>
 export default ProductIdPage;
 
 const fetchProduct = async (id: string) => {
-    const response = await fetch(`https://naszsklep-api.vercel.app/api/products/${id}`);
-    const data: StoreApiResponse = await response.json();
-    return data;
+    const productFetcher = fetchProductFrom(API_URL);
+    return await productFetcher<StoreApiResponse>(id);
 }
 
 
 export const getStaticPaths = async () => {
-    const response = await  fetch(`https://naszsklep-api.vercel.app/api/products?take=500&offset=0`);
-    const data: StoreApiResponse[] = await response.json();
+    const productsFetcher = fetchProductsFrom(API_URL);
+    const data = await  productsFetcher<StoreApiResponse>(500, 0);
     return ({
         paths: data.map(item => {
             return {
