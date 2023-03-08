@@ -1,8 +1,8 @@
 import {Rating} from "@/components/Rating";
 import Link from "next/link";
 
-interface ProductDetails {
-    id: number;
+interface FakeProductDetails {
+    id: string;
     title: string;
     description: string;
     thumbnailUrl: string;
@@ -10,11 +10,11 @@ interface ProductDetails {
     rating: number;
 }
 
-interface ProductDetailsProps {
-    data: ProductDetails
+interface FakeProductDetailsProps {
+    data: FakeProductDetails
 }
 
-export const ProductDetails = (props: ProductDetailsProps) => {
+export const FakeProductDetails = (props: FakeProductDetailsProps) => {
     const {data} = props;
     return (
         <>
@@ -26,13 +26,13 @@ export const ProductDetails = (props: ProductDetailsProps) => {
     )
 }
 
-type ProductListItem = Pick<ProductDetails, 'id' | 'title' | 'thumbnailUrl' | 'thumbnailAlt'>
+type ProductListFakeItem = Pick<FakeProductDetails, 'id' | 'title' | 'thumbnailUrl' | 'thumbnailAlt'>
 
-interface ProductListItemProps {
-    data: ProductListItem
+interface FakeProductListItemProps {
+    data: ProductListFakeItem
 }
 
-export const ProductListItem = (props: ProductListItemProps) => {
+export const FakeProductListItem = (props: FakeProductListItemProps) => {
     const {data} = props;
     return (
         <>

@@ -1,6 +1,10 @@
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
-import {ProductDetails} from "@/components/ProductDetails";
+import {FakeProductDetails} from "@/components/FakeProductDetails";
 import Link from "next/link";
+import {fetchProductFrom} from "@/helpers/fetchProductFrom";
+import {fetchProductsFrom} from "@/helpers/fetchProductsFrom";
+
+const API_URL = 'https://fakestoreapi.com/products/';
 
 const ProductIdPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   const {data} = props;
@@ -10,8 +14,8 @@ const ProductIdPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =>
   return (
       <div>
         <Link href='/'>Wróc na stronę główną</Link>
-        <ProductDetails data={{
-        id: data.id,
+        <FakeProductDetails data={{
+        id: `${data.id}`,
         title: data.title,
         rating: data.rating.rate,
         thumbnailAlt: data.description,
@@ -37,8 +41,8 @@ interface  StoreApiResponse {
 }
 
 export const  getStaticPaths = async () => {
-  const response = await fetch('https://fakestoreapi.com/products/');
-  const data: StoreApiResponse[] = await response.json();
+  const fetcher = fetchProductsFrom(API_URL);
+  const data = await fetcher<StoreApiResponse>();
   return ({
     paths: data.map(item => {
       return {
@@ -64,8 +68,8 @@ export const getStaticProps = async ({params }: GetStaticPropsContext<InferGetSt
       notFound: true
     }
   }
-  const response = await  fetch(`https://fakestoreapi.com/products/${params.productId}`);
-  const data: StoreApiResponse | null = await response.json();
+  const fetcher = fetchProductFrom(API_URL)
+  const data = await  fetcher<StoreApiResponse | null>(params.productId);
 
   return ({
     props: {
