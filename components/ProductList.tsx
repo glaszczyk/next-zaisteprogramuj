@@ -1,4 +1,5 @@
-import {ProductListItem, StoreApiResponse} from "@/components/ProductDetailsCSR";
+import {ProductListItem} from "@/components/ProductDetailsCSR";
+import {StoreApiResponse} from "@/pages/product-list/[productListId]";
 
 interface ProductListProps {
     data: StoreApiResponse[] | undefined,
