@@ -26,7 +26,9 @@ export const ProductDetailsCSR = (props: ProductDetailsCSRProps) => {
               />
           </div>
           <h2 className='text-3xl font-bold pt-8 pb-4'>{data.title}</h2>
-          <p className='mb-4'><ReactMarkdown>{data.longDescription}</ReactMarkdown></p>
+          <article className='prose prose-base xl:prose-xl'>
+              <ReactMarkdown>{data.longDescription}</ReactMarkdown>
+          </article>
           <Rating rating={data.rating.rate} />
       </div>
   )
