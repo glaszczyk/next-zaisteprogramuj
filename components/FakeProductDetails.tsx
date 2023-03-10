@@ -1,5 +1,6 @@
 import {Rating} from "@/components/Rating";
 import Link from "next/link";
+import Image from "next/image";
 
 interface FakeProductDetails {
     id: string;
@@ -18,8 +19,20 @@ export const FakeProductDetails = (props: FakeProductDetailsProps) => {
     const {data} = props;
     return (
         <>
-            <img src={data.thumbnailUrl} alt={data.thumbnailAlt}/>
-            <h2 className='text-2xl font-bold pt-2 pb-1'>{data.title}</h2>
+            <Image
+                loader={({src, width}) => `${src}?w=${width}`}
+                src={data.thumbnailUrl}
+                alt={data.thumbnailAlt}
+                width={500}
+                height={300}
+                style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                    aspectRatio: '4/3',
+                    objectFit: 'contain',
+                }}
+            />
+            <h2 className='text-2xl font-bold pt-8 pb-1'>{data.title}</h2>
             <p>{data.description}</p>
             <Rating rating={data.rating}/>
         </>
@@ -36,8 +49,20 @@ export const FakeProductListItem = (props: FakeProductListItemProps) => {
     const {data} = props;
     return (
         <>
-            <img src={data.thumbnailUrl} alt={data.thumbnailAlt}/>
-            <h2 className='text-2xl font-bold pt-2 pb-1'><Link href={`/products/${data.id}`}>{data.title}</Link></h2>
+            <Image
+                loader={({src, width}) => `${src}?w=${width}`}
+                src={data.thumbnailUrl}
+                alt={data.thumbnailAlt}
+                width={500}
+                height={300}
+                style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                    aspectRatio: '4/3',
+                    objectFit: 'contain',
+                }}
+            />
+            <h2 className='text-2xl font-bold pt-8 pb-1'><Link href={`/products/${data.id}`}>{data.title}</Link></h2>
         </>
     )
 }
