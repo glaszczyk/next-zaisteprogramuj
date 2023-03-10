@@ -3,16 +3,39 @@ import ReactMarkdown from "react-markdown";
 import {NextSeo} from "next-seo";
 import {StoreApiResponse} from "@/pages/product-list/[productListId]";
 import {Rating} from "@/components/Rating";
+import {useRouter} from "next/router";
 
 interface ProductDetailsCSRProps  {
     data: StoreApiResponse
 }
 export const ProductDetailsCSR = (props: ProductDetailsCSRProps) => {
     const {data} = props;
+    const router = useRouter();
+    console.log(router)
   return (
       <div className='mt-4 bg-white p-4 flex sm:w-full md:w-[75%] w-[50%] flex-col'>
           <NextSeo
             title={data.title}
+            description={data.description}
+            canonical={`${router.basePath}/${router.asPath}`}
+            openGraph={{
+                url: `${router.basePath}/${router.asPath}`,
+                title: data.title,
+                description: data.description,
+                images: [
+                    {
+                        url: data.image,
+                        alt: data.description,
+                        type: 'image/jpeg',
+                    },
+                ],
+                siteName: 'SiteName',
+            }}
+            twitter={{
+                handle: '@handle',
+                site: '@site',
+                cardType: 'summary_large_image',
+            }}
           />
           <div className=''>
               <Image
