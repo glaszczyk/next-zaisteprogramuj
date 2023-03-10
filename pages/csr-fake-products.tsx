@@ -19,21 +19,21 @@ const CSRFakeProductsPage = () => {
     return <p>Something went wrong…</p>
   }
   return (
-      <div>
-      <Pagination siblings={1} last={10}/>
-      <ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
-        {data.map(product => (
-            <li key={product.id} className='p-4 shadow-lg border-2 rounded-md'>
-              <FakeProductListItem data={{
-                id: `${product.id}`,
-                title: product.title,
-                thumbnailUrl: product.image,
-                thumbnailAlt: product.description,
-              }} />
-            </li>
-        ))}
-      </ul>
-      </div>
+      <>
+        <Pagination siblings={1} last={10}/>
+        <ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+          {data.map(product => (
+              <li key={product.id} className='p-4 shadow-lg border-2 rounded-md'>
+                <FakeProductListItem data={{
+                  id: `${product.id}`,
+                  title: product.title,
+                  thumbnailUrl: product.image,
+                  thumbnailAlt: product.description,
+                }} />
+              </li>
+          ))}
+        </ul>
+      </>
   )
 }
 
