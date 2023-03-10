@@ -1,8 +1,8 @@
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import {NextSeo} from "next-seo";
 import {StoreApiResponse} from "@/pages/product-list/[productListId]";
 import {Rating} from "@/components/Rating";
-import Head from "next/head";
 
 interface ProductDetailsCSRProps  {
     data: StoreApiResponse
@@ -11,9 +11,9 @@ export const ProductDetailsCSR = (props: ProductDetailsCSRProps) => {
     const {data} = props;
   return (
       <div className='mt-4 bg-white p-4 flex sm:w-full md:w-[75%] w-[50%] flex-col'>
-          <Head>
-              <title>{data.title}</title>
-          </Head>
+          <NextSeo
+            title={data.title}
+          />
           <div className=''>
               <Image
                   loader={({src, width}) => `${src}?w=${width}`}
