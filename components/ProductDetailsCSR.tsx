@@ -1,4 +1,5 @@
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
 import {StoreApiResponse} from "@/pages/product-list/[productListId]";
 import {Rating} from "@/components/Rating";
 
@@ -25,7 +26,7 @@ export const ProductDetailsCSR = (props: ProductDetailsCSRProps) => {
               />
           </div>
           <h2 className='text-3xl font-bold pt-8 pb-4'>{data.title}</h2>
-          <p className='mb-4'>{data.longDescription}</p>
+          <p className='mb-4'><ReactMarkdown>{data.longDescription}</ReactMarkdown></p>
           <Rating rating={data.rating.rate} />
       </div>
   )
