@@ -1,9 +1,10 @@
 import Image from "next/image";
-import ReactMarkdown from "react-markdown";
 import {NextSeo} from "next-seo";
+import {useRouter} from "next/router";
 import {StoreApiResponse} from "@/pages/product-list/[productListId]";
 import {Rating} from "@/components/Rating";
-import {useRouter} from "next/router";
+import {CustomReactMarkdown} from "@/components/CustomReactMarkdown";
+
 
 interface ProductDetailsCSRProps  {
     data: StoreApiResponse
@@ -54,7 +55,7 @@ export const ProductDetailsCSR = (props: ProductDetailsCSRProps) => {
           </div>
           <h2 className='text-3xl font-bold pt-8 pb-4'>{data.title}</h2>
           <article className='prose prose-base xl:prose-xl'>
-              <ReactMarkdown>{data.longDescription}</ReactMarkdown>
+              <CustomReactMarkdown>{data.longDescription}</CustomReactMarkdown>
           </article>
           <Rating rating={data.rating.rate} />
       </div>
