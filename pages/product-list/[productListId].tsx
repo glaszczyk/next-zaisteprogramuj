@@ -1,17 +1,17 @@
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
 import {useState} from "react";
-import {MDXRemoteSerializeResult} from "next-mdx-remote";
 import {fetchProductsFrom} from "@/helpers/fetchProductsFrom";
 import {getRange, usePagination} from "@/hooks/usePagination";
 import {ProductDetailsCSR} from "@/components/ProductDetailsCSR";
 import {ProductList} from "@/components/ProductList";
+import {MarkdownResult} from "@/utilityTypes";
 
 type ViewType = 'list' | 'item';
 const link =  'product-list';
 const API_URL = 'https://naszsklep-api.vercel.app/api';
 
 export interface StoreApiResponse {
-  longDescription:  MDXRemoteSerializeResult<Record<string, unknown>, Record<string, unknown>>;
+  longDescription:  MarkdownResult;
   image: string;
   price: number;
   rating: {
