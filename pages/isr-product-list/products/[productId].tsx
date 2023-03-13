@@ -1,5 +1,6 @@
-import {useRouter} from "next/router";
 import {GetStaticPropsContext, InferGetStaticPropsType} from "next";
+import {useRouter} from "next/router";
+import {serialize} from "next-mdx-remote/serialize";
 import {ProductDetailsCSR} from "@/components/ProductDetailsCSR";
 import {fetchProductFrom} from "@/helpers/fetchProductFrom";
 import {fetchProductsFrom} from "@/helpers/fetchProductsFrom";
@@ -61,7 +62,7 @@ export const getStaticProps = async ({params}: GetStaticPropsContext<InferGetSta
     return (
         {
             props: {
-                data
+                data: {...data, longDescription: await serialize(data.longDescription)}
             }
         }
     )
