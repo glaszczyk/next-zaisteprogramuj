@@ -15,6 +15,7 @@ const isInternalLink = (app: URL, url:string) => {
 
 export const CustomReactMarkdown = ({children}: { children: MarkdownResult }) => {
     try {
+        console.log(process.env.NEXT_PUBLIC_HOST);
         const envUrl = new URL('/', process.env.NEXT_PUBLIC_HOST);
         return (
             <MDXRemote
