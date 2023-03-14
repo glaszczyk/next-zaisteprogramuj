@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import {CartIcon} from "@/components/CartIcon";
+import { CartIcon } from '@/components/Cart/CartIcon';
 
 const links = [
   { label: 'Index', href: '/' },
@@ -30,20 +30,22 @@ export const Header = () => {
   const router = useRouter();
   const pathname = router.pathname;
   return (
-    <header className="flex">
-      <nav className="bg-gray-300 px-4 py-2 mx-auto w-full flex">
-        {links.map((link) => (
-          <NavLink
-            key={link.href}
-            href={link.href}
-            isActive={pathname === link.href}
-          >
-            {link.label}
-          </NavLink>
-        ))}
-        <button className='flex grow justify-end'>
+    <header className="flex bg-gray-300">
+      <nav className=" px-4 py-2 mx-auto w-full flex justify-between">
+        <div>
+          {links.map((link) => (
+            <NavLink
+              key={link.href}
+              href={link.href}
+              isActive={pathname === link.href}
+            >
+              {link.label}
+            </NavLink>
+          ))}
+        </div>
+        <Link href="/cart">
           <CartIcon />
-        </button>
+        </Link>
       </nav>
     </header>
   );
