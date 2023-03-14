@@ -40,6 +40,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## ENV variables
 
 ### .env.development
+
 `HOSTNAME` - app hostname
 
 `PORT` - app port for local
