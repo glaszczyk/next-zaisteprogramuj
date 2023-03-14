@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { CartIcon } from '@/components/Cart/CartIcon';
+import { CartBar } from '@/components/Cart/CartBar';
 
 const links = [
   { label: 'Index', href: '/' },
@@ -26,6 +26,7 @@ const NavLink = (props: NavLinkProps) => {
     </Link>
   );
 };
+
 export const Header = () => {
   const router = useRouter();
   const pathname = router.pathname;
@@ -43,9 +44,7 @@ export const Header = () => {
             </NavLink>
           ))}
         </div>
-        <Link href="/cart">
-          <CartIcon />
-        </Link>
+        <CartBar />
       </nav>
     </header>
   );
