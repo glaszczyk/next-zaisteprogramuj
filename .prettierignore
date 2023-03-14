@@ -1,0 +1,15 @@
+# Dependency directories
+node_modules
+
+# Build artefacts
+build
+dist
+
+# Next files
+.next
+
+#VCS
+.github
+
+# IDE settings
+.idea
