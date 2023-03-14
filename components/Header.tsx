@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import {CartIcon} from "@/components/CartIcon";
 
 const links = [
   { label: 'Index', href: '/' },
@@ -29,8 +30,8 @@ export const Header = () => {
   const router = useRouter();
   const pathname = router.pathname;
   return (
-    <header className="mx-auto w-full">
-      <nav className="bg-gray-300 px-4 py-2">
+    <header className="flex">
+      <nav className="bg-gray-300 px-4 py-2 mx-auto w-full flex">
         {links.map((link) => (
           <NavLink
             key={link.href}
@@ -40,6 +41,9 @@ export const Header = () => {
             {link.label}
           </NavLink>
         ))}
+        <button className='flex grow justify-end'>
+          <CartIcon />
+        </button>
       </nav>
     </header>
   );
