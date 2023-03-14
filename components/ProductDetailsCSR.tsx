@@ -12,7 +12,6 @@ interface ProductDetailsCSRProps  {
 export const ProductDetailsCSR = (props: ProductDetailsCSRProps) => {
     const {data} = props;
     const router = useRouter();
-    console.log(router)
   return (
       <div className='mt-4 bg-white p-4 flex sm:w-full md:w-[75%] w-[50%] flex-col'>
           <NextSeo
