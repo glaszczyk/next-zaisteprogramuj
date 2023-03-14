@@ -44,4 +44,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 `PORT` - app port for local
 
-`HOST` i.e. `http://$HOSTNAME:$PORT`
+`NEXT_PUBLIC_HOST` i.e. `http://$HOSTNAME:$PORT`
