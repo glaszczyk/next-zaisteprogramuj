@@ -97,7 +97,7 @@ export const ProductListItem = (props: ProductListItemProps) => {
       <button
         className="mt-4 p-2 border-2 border-grey-200 rounded-md text-xl"
         onClick={() => {
-          addToCart({ title: data.title, price: 10, count: 1 });
+          addToCart({ id: data.id, title: data.title, price: 10, count: 1 });
         }}
       >
         Add to cart

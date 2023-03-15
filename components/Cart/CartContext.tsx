@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 interface CartItem {
+  readonly id: string;
   readonly price: number;
   readonly title: string;
   readonly count: number;
@@ -9,7 +10,7 @@ interface CartItem {
 interface CartState {
   readonly items: readonly CartItem[];
   readonly addToCart: (item: CartItem) => void;
-  readonly removeFromCart: (item: CartItem) => void;
+  readonly removeFromCart: (id: CartItem['id']) => void;
 }
 
 export const CartStateContext = createContext<CartState | null>(null);
@@ -24,13 +25,13 @@ export const CartStateContextProvider = ({
   const addToCart = (item: CartItem) => {
     setCartItems((prevState) => {
       const existingItem = prevState.find(
-        (existingItem) => existingItem.title === item.title
+        (existingItem) => existingItem.id === item.id
       );
       if (!existingItem) {
         return [...prevState, item];
       }
       return prevState.map((existingItem) => {
-        if (existingItem.title === item.title) {
+        if (existingItem.id === item.id) {
           return { ...existingItem, count: existingItem.count + 1 };
         }
         return existingItem;
@@ -38,12 +39,12 @@ export const CartStateContextProvider = ({
     });
   };
 
-  const removeFromCart = (item: CartItem) => {
+  const removeFromCart = (id: CartItem['id']) => {
     setCartItems((prevState) => {
       return prevState
         .filter((existingItem) => existingItem.count > 1)
         .map((existingItem) => {
-          if (existingItem.title === item.title) {
+          if (existingItem.id === id) {
             return { ...existingItem, count: existingItem.count - 1 };
           }
           return existingItem;

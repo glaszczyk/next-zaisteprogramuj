@@ -20,7 +20,7 @@ const CartPage = () => {
                   <button
                     className="ml-4 text-red-600"
                     onClick={() => {
-                      cartState.removeFromCart(item);
+                      cartState.removeFromCart(item.id);
                     }}
                   >
                     <TrashIcon />
