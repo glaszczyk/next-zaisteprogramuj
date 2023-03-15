@@ -7,6 +7,7 @@ interface CartItem {
 
 interface CartState {
   items: CartItem[];
+  addToCart: (item: CartItem) => void;
 }
 
 export const CartStateContext = createContext<CartState | null>(null);
@@ -23,8 +24,13 @@ export const CartStateContextProvider = ({
     },
   ]);
 
+  const addToCart = (item: CartItem) => {
+    setCartItems((prevState) => [...prevState, item]);
+  };
+
   const contextValue = {
     items: cartItems,
+    addToCart,
   };
 
   return (
