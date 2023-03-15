@@ -1,4 +1,5 @@
 import { useCartState } from '@/components/Cart/CartContext';
+import { TrashIcon } from '@/components/Cart/TrashIcon';
 
 const CartPage = () => {
   const cartState = useCartState();
@@ -10,18 +11,19 @@ const CartPage = () => {
             return (
               <li
                 key={`${item.title}_${idx}`}
-                className="p-2 border-b-2 flex justify-between"
+                className="p-2 border-b-2 flex justify-between align-middle"
               >
                 <p>{item.title}</p>
-                <div>
+                <div className="flex align-middle">
                   <span>{item.price}</span>
+                  <span className="ml-4">{item.count} szt.</span>
                   <button
                     className="ml-4 text-red-600"
                     onClick={() => {
-                      console.log('Product removed');
+                      cartState.removeFromCart(item);
                     }}
                   >
-                    Usuń
+                    <TrashIcon />
                   </button>
                 </div>
               </li>
