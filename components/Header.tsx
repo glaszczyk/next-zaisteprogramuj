@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { CartBar } from '@/components/Cart/CartBar';
 
 const links = [
   { label: 'Index', href: '/' },
@@ -25,21 +26,25 @@ const NavLink = (props: NavLinkProps) => {
     </Link>
   );
 };
+
 export const Header = () => {
   const router = useRouter();
   const pathname = router.pathname;
   return (
-    <header className="mx-auto w-full">
-      <nav className="bg-gray-300 px-4 py-2">
-        {links.map((link) => (
-          <NavLink
-            key={link.href}
-            href={link.href}
-            isActive={pathname === link.href}
-          >
-            {link.label}
-          </NavLink>
-        ))}
+    <header className="flex bg-gray-300">
+      <nav className=" px-4 py-2 mx-auto w-full flex justify-between">
+        <div>
+          {links.map((link) => (
+            <NavLink
+              key={link.href}
+              href={link.href}
+              isActive={pathname === link.href}
+            >
+              {link.label}
+            </NavLink>
+          ))}
+        </div>
+        <CartBar />
       </nav>
     </header>
   );

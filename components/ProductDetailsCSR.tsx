@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { StoreApiResponse } from '@/pages/product-list/[productListId]';
 import { Rating } from '@/components/Rating';
 import { CustomReactMarkdown } from '@/components/CustomReactMarkdown';
+import { useCartState } from '@/components/Cart/CartContext';
 
 interface ProductDetailsCSRProps {
   data: StoreApiResponse;
@@ -60,7 +61,7 @@ export const ProductDetailsCSR = (props: ProductDetailsCSRProps) => {
   );
 };
 
-type ProductListItemData = Pick<
+export type ProductListItemData = Pick<
   StoreApiResponse,
   'id' | 'title' | 'description' | 'image'
 >;
@@ -70,6 +71,7 @@ interface ProductListItemProps {
 }
 
 export const ProductListItem = (props: ProductListItemProps) => {
+  const { addToCart } = useCartState();
   const { data, onClick } = props;
   return (
     <div className="p-4 flex flex-col h-full shadow-md rounded-md bg-white">
@@ -92,6 +94,14 @@ export const ProductListItem = (props: ProductListItemProps) => {
       <h2 className="text-2xl font-bold">
         <button onClick={() => onClick(data.id)}>{data.title}</button>
       </h2>
+      <button
+        className="mt-4 p-2 border-2 border-grey-200 rounded-md text-xl"
+        onClick={() => {
+          addToCart({ id: data.id, title: data.title, price: 10, count: 1 });
+        }}
+      >
+        Add to cart
+      </button>
     </div>
   );
 };
