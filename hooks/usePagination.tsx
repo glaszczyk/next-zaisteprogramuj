@@ -25,7 +25,9 @@ interface PaginationButtonProps {
 
 export const getRange = (start: number, end: number) => {
   const result = [];
+  // eslint-disable-next-line functional/no-let
   for (let i = start; i <= end; i++) {
+    // eslint-disable-next-line functional/immutable-data
     result.push(i);
   }
   return result;
