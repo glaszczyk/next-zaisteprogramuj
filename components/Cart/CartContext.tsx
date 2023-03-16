@@ -1,6 +1,13 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { LocalStorageCartService } from '@/components/Cart/CartStorageService';
 
-interface CartItem {
+export interface CartItem {
   readonly id: string;
   readonly price: number;
   readonly title: string;
@@ -15,22 +22,35 @@ interface CartState {
 
 export const CartStateContext = createContext<CartState | null>(null);
 
+const SHOP_KEY = 'COURSE_SHOPPING_CART';
+
 export const CartStateContextProvider = ({
   children,
 }: {
   children: ReactNode;
 }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[] | undefined>(undefined);
+
+  useEffect(() => {
+    setCartItems(LocalStorageCartService.getCart(SHOP_KEY));
+  }, []);
+
+  useEffect(() => {
+    if (cartItems === undefined) {
+      return;
+    }
+    LocalStorageCartService.setCart(SHOP_KEY, cartItems);
+  }, [cartItems]);
 
   const addToCart = (item: CartItem) => {
-    setCartItems((prevState) => {
-      const existingItem = prevState.find(
+    setCartItems((prevState = []) => {
+      const existingItem = prevState?.find(
         (existingItem) => existingItem.id === item.id
       );
       if (!existingItem) {
         return [...prevState, item];
       }
-      return prevState.map((existingItem) => {
+      return prevState?.map((existingItem) => {
         if (existingItem.id === item.id) {
           return { ...existingItem, count: existingItem.count + 1 };
         }
@@ -40,7 +60,7 @@ export const CartStateContextProvider = ({
   };
 
   const removeFromCart = (id: CartItem['id']) => {
-    setCartItems((prevState) => {
+    setCartItems((prevState = []) => {
       return prevState
         .filter((existingItem) => existingItem.count > 1)
         .map((existingItem) => {
@@ -53,7 +73,7 @@ export const CartStateContextProvider = ({
   };
 
   const contextValue = {
-    items: cartItems,
+    items: cartItems || [],
     addToCart,
     removeFromCart,
   };
