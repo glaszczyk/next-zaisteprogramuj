@@ -1,4 +1,5 @@
 import { FakeProductDetails } from '@/components/FakeProductDetails';
+import { useQuery, gql } from '@apollo/client';
 
 const DATA = {
   id: '123',
@@ -10,8 +11,39 @@ const DATA = {
   rating: 4.5,
 };
 
+const GetProducts = gql`
+  query GetAllProducts {
+    products {
+      id
+      slug
+      title
+      description
+      thumbnail {
+        url
+      }
+    }
+  }
+`;
+
 const HomePage = () => {
-  return <FakeProductDetails data={DATA} />;
+  const { loading, error, data } = useQuery(GetProducts);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+  console.log(data);
+  const product = data.products[0];
+  return (
+    <FakeProductDetails
+      data={{
+        id: product.id,
+        title: product.title,
+        thumbnailAlt: product.slug,
+        description: product.description,
+        rating: 4,
+        thumbnailUrl: product.thumbnail.url,
+      }}
+    />
+  );
 };
 
 export default HomePage;
