@@ -32,6 +32,7 @@ const GraphqlProductsPage = (
               title: product.title,
               thumbnailAlt: product.description,
               thumbnailUrl: product.images[0].url,
+              slug: product.slug,
             }}
           />
         </li>

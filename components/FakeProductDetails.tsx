@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 interface FakeProductDetails {
   id: string;
+  slug: string;
   title: string;
   description: string;
   thumbnailUrl: string;
@@ -41,7 +42,7 @@ export const FakeProductDetails = (props: FakeProductDetailsProps) => {
 
 type ProductListFakeItem = Pick<
   FakeProductDetails,
-  'id' | 'title' | 'thumbnailUrl' | 'thumbnailAlt'
+  'id' | 'title' | 'thumbnailUrl' | 'thumbnailAlt' | 'slug'
 >;
 
 interface FakeProductListItemProps {
@@ -66,7 +67,7 @@ export const FakeProductListItem = (props: FakeProductListItemProps) => {
         }}
       />
       <h2 className="text-2xl font-bold pt-8 pb-1">
-        <Link href={`/products/${data.id}`}>{data.title}</Link>
+        <Link href={`/products/${data.slug}`}>{data.title}</Link>
       </h2>
     </>
   );
