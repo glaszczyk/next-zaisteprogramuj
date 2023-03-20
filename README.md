@@ -46,3 +46,13 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 `PORT` - app port for local
 
 `NEXT_PUBLIC_HOST` i.e. `http://$HOSTNAME:$PORT`
+
+### .env.production
+
+You need if you need to use `yarn build` locally. If not present, ISR can't generate pages properly and will throw error
+
+`HOSTNAME` - app hostname
+
+`PORT` - app port for local
+
+`NEXT_PUBLIC_HOST` i.e. `http://$HOSTNAME:$PORT`

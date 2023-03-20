@@ -61,7 +61,6 @@ export const getStaticPaths = async () => {
   const { data } = await apolloClient.query<GetAllProductsSlugsResponse>({
     query: GetAllProductsSlugs,
   });
-  console.log(data);
   return {
     paths: data.products.map((item) => {
       return {

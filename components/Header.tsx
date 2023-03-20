@@ -9,8 +9,6 @@ const links = [
   { label: 'SSG Products', href: '/product-list/1' },
   { label: 'CSR Products', href: '/csr-products' },
   { label: 'GraphQl Products', href: '/graphql-products' },
-  { label: 'SSG Fake', href: '/ssg-fake-products' },
-  { label: 'CSR Fake', href: '/csr-fake-products' },
 ];
 
 type NavLinkProps = {
