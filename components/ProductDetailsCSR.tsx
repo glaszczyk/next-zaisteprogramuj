@@ -3,8 +3,8 @@ import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { StoreApiResponse } from '@/pages/product-list/[productListId]';
 import { Rating } from '@/components/Rating';
-import { CustomReactMarkdown } from '@/components/CustomReactMarkdown';
 import { useCartState } from '@/components/Cart/CartContext';
+import { CustomReactMarkdown } from '@/components/CustomReactMarkdown';
 
 interface ProductDetailsCSRProps {
   data: StoreApiResponse;

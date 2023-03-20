@@ -11,7 +11,7 @@ const link = 'product-list';
 const API_URL = 'https://naszsklep-api.vercel.app/api';
 
 export interface StoreApiResponse {
-  longDescription: MarkdownResult;
+  longDescription: MarkdownResult | string;
   image: string;
   price: number;
   rating: {
