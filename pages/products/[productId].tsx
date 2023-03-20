@@ -1,8 +1,8 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
-import Link from 'next/link';
 import { gql } from '@apollo/client';
 import { apolloClient } from '@/graphql/apolloClient';
-import { FakeProductDetails } from '@/components/FakeProductDetails';
+import { ProductDetailsCSR } from '@/components/ProductDetailsCSR';
+import { useRouter } from 'next/router';
 
 const GetAllProductsSlugs = gql`
   query GetAllProductsSlugs {
@@ -32,23 +32,30 @@ const GetProductBySlug = gql`
 const ProductIdPage = (
   props: InferGetStaticPropsType<typeof getStaticProps>
 ) => {
+  const router = useRouter();
   const { data } = props;
   if (!data?.product) {
     return <p>Something went wrong</p>;
   }
   const { product } = data;
   return (
-    <div>
-      <Link href="/">Wróc na stronę główną</Link>
-      <FakeProductDetails
+    <div className="bg-gray-100 p-4">
+      <button
+        className="p-2 bg-white border-2 border-grey-200 rounded-md"
+        onClick={() => router.back()}
+      >
+        Go back to the list
+      </button>
+      <ProductDetailsCSR
         data={{
           id: `${product.id}`,
           title: product.title,
-          rating: 4,
-          thumbnailAlt: product.description,
-          thumbnailUrl: product.images[0].url,
+          rating: { rate: 4, count: 0 },
+          longDescription: product.longDescription,
+          image: product.images[0].url,
           description: product.description,
-          slug: product.slug,
+          price: 0,
+          category: '',
         }}
       />
     </div>
