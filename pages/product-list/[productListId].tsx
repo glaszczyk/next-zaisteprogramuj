@@ -18,7 +18,7 @@ export interface StoreApiResponse {
     rate: number;
     count: number;
   };
-  description: string;
+  description: string | undefined;
   id: string;
   title: string;
   category: string;

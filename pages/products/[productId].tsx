@@ -1,33 +1,14 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
-import { gql } from '@apollo/client';
 import { apolloClient } from '@/graphql/apolloClient';
 import { ProductDetailsCSR } from '@/components/ProductDetailsCSR';
 import { useRouter } from 'next/router';
-
-const GetAllProductsSlugs = gql`
-  query GetAllProductsSlugs {
-    products {
-      slug
-    }
-  }
-`;
-
-const GetProductBySlug = gql`
-  query GetProductBySlug($slug: String) {
-    product(where: { slug: $slug }) {
-      id
-      slug
-      title
-      description
-      longDescription
-      images(first: 1) {
-        url
-        id
-      }
-      price
-    }
-  }
-`;
+import {
+  GetAllProductsSlugsDocument,
+  GetAllProductsSlugsQuery,
+  GetProductBySlugDocument,
+  GetProductBySlugQuery,
+  GetProductBySlugQueryVariables,
+} from '@/generated/graphql';
 
 const ProductIdPage = (
   props: InferGetStaticPropsType<typeof getStaticProps>
@@ -51,9 +32,9 @@ const ProductIdPage = (
           id: `${product.id}`,
           title: product.title,
           rating: { rate: 4, count: 0 },
-          longDescription: product.longDescription,
+          longDescription: product.longDescription || '',
           image: product.images[0].url,
-          description: product.description,
+          description: product.description || '',
           price: 0,
           category: '',
         }}
@@ -65,8 +46,8 @@ const ProductIdPage = (
 export default ProductIdPage;
 
 export const getStaticPaths = async () => {
-  const { data } = await apolloClient.query<GetAllProductsSlugsResponse>({
-    query: GetAllProductsSlugs,
+  const { data } = await apolloClient.query<GetAllProductsSlugsQuery>({
+    query: GetAllProductsSlugsDocument,
   });
   return {
     paths: data.products.map((item) => {
@@ -96,11 +77,14 @@ export const getStaticProps = async ({
     };
   }
 
-  const { data } = await apolloClient.query<GetProductBySlugResponse>({
+  const { data } = await apolloClient.query<
+    GetProductBySlugQuery,
+    GetProductBySlugQueryVariables
+  >({
     variables: {
       slug: params.productId,
     },
-    query: GetProductBySlug,
+    query: GetProductBySlugDocument,
   });
 
   return {
@@ -109,30 +93,3 @@ export const getStaticProps = async ({
     },
   };
 };
-
-export interface ProductSlug {
-  slug: string;
-}
-
-export interface GetAllProductsSlugsResponse {
-  products: Array<ProductSlug>;
-}
-
-export interface Image {
-  id: string;
-  url: string;
-}
-
-export interface Product {
-  longDescription: string;
-  images: Array<Image>;
-  price: number;
-  description: string;
-  id: string;
-  title: string;
-  slug: string;
-}
-
-export interface GetProductBySlugResponse {
-  product: Product;
-}
