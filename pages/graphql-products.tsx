@@ -1,22 +1,10 @@
 import { InferGetStaticPropsType } from 'next';
 import { FakeProductListItem } from '@/components/FakeProductDetails';
-import { gql } from '@apollo/client';
 import { apolloClient } from '@/graphql/apolloClient';
-
-const GetAllProducts = gql`
-  query GetAllProducts {
-    products {
-      id
-      slug
-      title
-      description
-      images(first: 1) {
-        id
-        url
-      }
-    }
-  }
-`;
+import {
+  GetAllProductsDocument,
+  GetAllProductsQuery,
+} from '@/generated/graphql';
 
 const GraphqlProductsPage = (
   props: InferGetStaticPropsType<typeof getStaticProps>
@@ -30,7 +18,7 @@ const GraphqlProductsPage = (
             data={{
               id: `${product.id}`,
               title: product.title,
-              thumbnailAlt: product.description,
+              thumbnailAlt: product.title,
               thumbnailUrl: product.images[0].url,
               slug: product.slug,
             }}
@@ -43,8 +31,8 @@ const GraphqlProductsPage = (
 
 // called when app is building
 export const getStaticProps = async () => {
-  const { data } = await apolloClient.query<GetAllProductsResponse>({
-    query: GetAllProducts,
+  const { data } = await apolloClient.query<GetAllProductsQuery>({
+    query: GetAllProductsDocument,
   });
   return {
     props: {
@@ -54,20 +42,3 @@ export const getStaticProps = async () => {
 };
 
 export default GraphqlProductsPage;
-
-export interface Image {
-  id: string;
-  url: string;
-}
-
-export interface GetAllProductsResponse {
-  products: Array<Product>;
-}
-
-export interface Product {
-  images: Array<Image>;
-  description: string;
-  id: string;
-  title: string;
-  slug: string;
-}
