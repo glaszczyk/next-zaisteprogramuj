@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.10",
+    "@headlessui/react": "^1.7.13",
+    "@heroicons/react": "^2.0.16",
     "@next/font": "13.1.6",
     "@tanstack/react-query": "^4.24.10",
     "@types/node": "18.14.0",
@@ -29,14 +31,15 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "3.2.2",
+    "@graphql-codegen/client-preset": "2.1.1",
+    "@graphql-codegen/introspection": "3.0.1",
+    "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.9",
     "@typescript-eslint/parser": "^5.55.0",
     "autoprefixer": "^10.4.13",
     "eslint-plugin-functional": "^5.0.6",
     "postcss": "^8.4.21",
     "prettier": "2.8.4",
-    "tailwindcss": "^3.2.7",
-    "@graphql-codegen/introspection": "3.0.1",
-    "@graphql-codegen/client-preset": "2.1.1"
+    "tailwindcss": "^3.2.7"
   }
 }
