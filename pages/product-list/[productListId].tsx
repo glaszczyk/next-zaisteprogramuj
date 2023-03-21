@@ -11,14 +11,14 @@ const link = 'product-list';
 const API_URL = 'https://naszsklep-api.vercel.app/api';
 
 export interface StoreApiResponse {
-  longDescription: MarkdownResult;
+  longDescription: MarkdownResult | string;
   image: string;
   price: number;
   rating: {
     rate: number;
     count: number;
   };
-  description: string;
+  description: string | undefined;
   id: string;
   title: string;
   category: string;

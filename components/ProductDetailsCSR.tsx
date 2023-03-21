@@ -3,8 +3,8 @@ import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { StoreApiResponse } from '@/pages/product-list/[productListId]';
 import { Rating } from '@/components/Rating';
-import { CustomReactMarkdown } from '@/components/CustomReactMarkdown';
 import { useCartState } from '@/components/Cart/CartContext';
+import { CustomReactMarkdown } from '@/components/CustomReactMarkdown';
 
 interface ProductDetailsCSRProps {
   data: StoreApiResponse;
@@ -25,7 +25,7 @@ export const ProductDetailsCSR = (props: ProductDetailsCSRProps) => {
           images: [
             {
               url: data.image,
-              alt: data.description,
+              alt: data.title,
               type: 'image/jpeg',
             },
           ],
@@ -41,7 +41,7 @@ export const ProductDetailsCSR = (props: ProductDetailsCSRProps) => {
         <Image
           loader={({ src, width }) => `${src}?w=${width}`}
           src={data.image}
-          alt={data.description}
+          alt={data.title}
           width={500}
           height={300}
           style={{
@@ -79,7 +79,7 @@ export const ProductListItem = (props: ProductListItemProps) => {
         <Image
           loader={({ src, width, quality }) => `${src}?w=${width}&q=${quality}`}
           src={data.image}
-          alt={data.description}
+          alt={data.title}
           width={500}
           height={300}
           quality={70}

@@ -1,29 +1,42 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
-import { FakeProductDetails } from '@/components/FakeProductDetails';
-import Link from 'next/link';
-import { fetchProductFrom } from '@/helpers/fetchProductFrom';
-import { fetchProductsFrom } from '@/helpers/fetchProductsFrom';
-
-const API_URL = 'https://fakestoreapi.com/products/';
+import { apolloClient } from '@/graphql/apolloClient';
+import { ProductDetailsCSR } from '@/components/ProductDetailsCSR';
+import { useRouter } from 'next/router';
+import {
+  GetAllProductsSlugsDocument,
+  GetAllProductsSlugsQuery,
+  GetProductBySlugDocument,
+  GetProductBySlugQuery,
+  GetProductBySlugQueryVariables,
+} from '@/generated/graphql';
 
 const ProductIdPage = (
   props: InferGetStaticPropsType<typeof getStaticProps>
 ) => {
+  const router = useRouter();
   const { data } = props;
-  if (!data) {
+  if (!data?.product) {
     return <p>Something went wrong</p>;
   }
+  const { product } = data;
   return (
-    <div>
-      <Link href="/">Wróc na stronę główną</Link>
-      <FakeProductDetails
+    <div className="bg-gray-100 p-4">
+      <button
+        className="p-2 bg-white border-2 border-grey-200 rounded-md"
+        onClick={() => router.back()}
+      >
+        Go back to the list
+      </button>
+      <ProductDetailsCSR
         data={{
-          id: `${data.id}`,
-          title: data.title,
-          rating: data.rating.rate,
-          thumbnailAlt: data.description,
-          thumbnailUrl: data.image,
-          description: data.description,
+          id: `${product.id}`,
+          title: product.title,
+          rating: { rate: 4, count: 0 },
+          longDescription: product.longDescription || '',
+          image: product.images[0].url,
+          description: product.description || '',
+          price: 0,
+          category: '',
         }}
       />
     </div>
@@ -32,27 +45,15 @@ const ProductIdPage = (
 
 export default ProductIdPage;
 
-interface StoreApiResponse {
-  image: string;
-  price: number;
-  rating: {
-    rate: number;
-    count: number;
-  };
-  description: string;
-  id: number;
-  title: string;
-  category: string;
-}
-
 export const getStaticPaths = async () => {
-  const fetcher = fetchProductsFrom(API_URL);
-  const data = await fetcher<StoreApiResponse>();
+  const { data } = await apolloClient.query<GetAllProductsSlugsQuery>({
+    query: GetAllProductsSlugsDocument,
+  });
   return {
-    paths: data.map((item) => {
+    paths: data.products.map((item) => {
       return {
         params: {
-          productId: `${item.id}`,
+          productId: `${item.slug}`,
         },
       };
     }),
@@ -75,8 +76,16 @@ export const getStaticProps = async ({
       notFound: true,
     };
   }
-  const fetcher = fetchProductFrom(API_URL);
-  const data = await fetcher<StoreApiResponse | null>(params.productId);
+
+  const { data } = await apolloClient.query<
+    GetProductBySlugQuery,
+    GetProductBySlugQueryVariables
+  >({
+    variables: {
+      slug: params.productId,
+    },
+    query: GetProductBySlugDocument,
+  });
 
   return {
     props: {
