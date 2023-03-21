@@ -62,13 +62,13 @@ export const CartStateContextProvider = ({
   const removeFromCart = (id: CartItem['id']) => {
     setCartItems((prevState = []) => {
       return prevState
-        .filter((existingItem) => existingItem.count > 1)
         .map((existingItem) => {
           if (existingItem.id === id) {
             return { ...existingItem, count: existingItem.count - 1 };
           }
           return existingItem;
-        });
+        })
+        .filter((existingItem) => existingItem.count > 0);
     });
   };
 
