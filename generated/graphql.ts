@@ -1307,7 +1307,7 @@ export type Product = Node & {
   /** User that last published this document */
   publishedBy?: Maybe<User>;
   scheduledIn: Array<ScheduledOperation>;
-  slug?: Maybe<Scalars['String']>;
+  slug: Scalars['String'];
   /** System stage field */
   stage: Stage;
   thumbnail?: Maybe<Asset>;
@@ -1412,7 +1412,7 @@ export type ProductCreateInput = {
   images?: InputMaybe<AssetCreateManyInlineInput>;
   longDescription?: InputMaybe<Scalars['String']>;
   price: Scalars['Int'];
-  slug?: InputMaybe<Scalars['String']>;
+  slug: Scalars['String'];
   thumbnail?: InputMaybe<AssetCreateOneInlineInput>;
   title: Scalars['String'];
   updatedAt?: InputMaybe<Scalars['DateTime']>;
@@ -3715,19 +3715,19 @@ export enum _SystemDateTimeFieldVariation {
 export type GetAllProductsSlugsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllProductsSlugsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', slug?: string | null }> };
+export type GetAllProductsSlugsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', slug: string }> };
 
 export type GetProductBySlugQueryVariables = Exact<{
   slug?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type GetProductBySlugQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, slug?: string | null, title: string, description?: string | null, longDescription?: string | null, price: number, images: Array<{ __typename?: 'Asset', url: string, id: string }> } | null };
+export type GetProductBySlugQuery = { __typename?: 'Query', product?: { __typename?: 'Product', id: string, slug: string, title: string, description?: string | null, longDescription?: string | null, price: number, images: Array<{ __typename?: 'Asset', url: string, id: string }> } | null };
 
 export type GetAllProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, slug?: string | null, title: string, description?: string | null, images: Array<{ __typename?: 'Asset', id: string, url: string }> }> };
+export type GetAllProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, slug: string, title: string, description?: string | null, images: Array<{ __typename?: 'Asset', id: string, url: string }> }> };
 
 
 export const GetAllProductsSlugsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAllProductsSlugs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"products"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"slug"}}]}}]}}]} as unknown as DocumentNode<GetAllProductsSlugsQuery, GetAllProductsSlugsQueryVariables>;
