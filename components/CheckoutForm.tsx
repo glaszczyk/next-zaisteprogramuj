@@ -29,11 +29,10 @@ addMethod(StringSchema, 'cardExpirationDate', function (errorMessage: string) {
 
 const checkoutFormDataScheme = yup
   .object({
-    myCustomEmail: yup
+    emailAddress: yup
       .string()
       .email('Provide valid email address')
       .required(requiredValue),
-    emailAddress: yup.string().email().required(requiredValue),
     nameOnCard: yup.string().required(requiredValue),
     cardNumber: yup.string().required(requiredValue),
     expirationDate: yup
@@ -68,26 +67,51 @@ interface InputProps extends HTMLProps<HTMLInputElement> {
   register: Function;
   children: ReactNode;
   name: string;
+  labelFirst?: boolean;
   type: HTMLInputTypeAttribute;
   errors: FieldErrors;
 }
 
-const Input = ({ register, name, children, errors, ...rest }: InputProps) => {
+const Input = ({
+  register,
+  name,
+  children,
+  errors,
+  labelFirst = true,
+  ...rest
+}: InputProps) => {
   const fieldError = errors && errors[name];
   const fieldErrorMessage = fieldError?.message as string;
+  if (labelFirst)
+    return (
+      <>
+        <label
+          htmlFor={name}
+          className="text-m block font-medium mb-2 dark:text-white"
+        >
+          {children}
+        </label>
+        <input
+          {...register(name)}
+          {...rest}
+          className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+        />
+        <ErrorMessage>{fieldErrorMessage}</ErrorMessage>
+      </>
+    );
   return (
     <>
-      <label
-        htmlFor={name}
-        className="text-m block font-medium mb-2 dark:text-white"
-      >
-        {children}
-      </label>
       <input
         {...register(name)}
         {...rest}
-        className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+        className="py-3 px-4 border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
       />
+      <label
+        htmlFor={name}
+        className="text-m font-medium mb-2 dark:text-white ml-2"
+      >
+        {children}
+      </label>
       <ErrorMessage>{fieldErrorMessage}</ErrorMessage>
     </>
   );
@@ -112,103 +136,60 @@ export const CheckoutForm = () => {
           <FormHeader>Contact information</FormHeader>
         </legend>
         <Input
-          name="myCustomEmail"
+          name="emailAddress"
           errors={errors}
           type="email"
           placeholder="you@site.com"
           register={register}
         >
-          Custom email
+          Email address:{' '}
         </Input>
-        <label
-          htmlFor="emailAddress"
-          className="text-m block font-medium mb-2 dark:text-white"
-        >
-          Email address:
-        </label>
-        <input
-          type="email"
-          id="emailAddress"
-          className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-          placeholder="you@site.com"
-          {...register('emailAddress')}
-        />
-        {errors?.emailAddress && (
-          <p className="mt-2 text-red-600">Required value</p>
-        )}
       </fieldset>
       <fieldset>
         <legend>
           <FormHeader>Payment details</FormHeader>
         </legend>
-        <label
-          htmlFor="nameOnCard"
-          className="text-m block font-medium mb-2 dark:text-white"
+        <Input
+          register={register}
+          name="nameOnCard"
+          type="text"
+          errors={errors}
+          autoComplete="cc-name"
         >
           Name on card
-        </label>
-        <input
+        </Input>
+        <Input
           type="text"
-          id="nameOnCard"
-          autoComplete="cc-name"
-          {...register('nameOnCard')}
-          className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-        />
-        {errors?.nameOnCard && (
-          <p className="mt-2 text-red-600">Required value</p>
-        )}
-        <label
-          htmlFor="cardNumber"
-          className="text-m block font-medium mb-2 dark:text-white"
+          name="cardNumber"
+          autoComplete="cc-number"
+          register={register}
+          errors={errors}
         >
           Card number
-        </label>
-        <input
-          type="text"
-          id="cardNumber"
-          autoComplete="cc-number"
-          {...register('cardNumber')}
-          className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-        />
-        {errors?.cardNumber && (
-          <p className="mt-2 text-red-600">Required value</p>
-        )}
+        </Input>
+
         <div className="flex gap-4">
           <div className="flex-grow">
-            <label
-              htmlFor="expirationDate"
-              className="text-m block font-medium mb-2 dark:text-white"
+            <Input
+              type="text"
+              name="expirationDate"
+              autoComplete="cc-exp"
+              register={register}
+              errors={errors}
             >
               Expiration date (MM/YY)
-            </label>
-            <input
-              type="text"
-              id="expirationDate"
-              autoComplete="cc-exp"
-              {...register('expirationDate')}
-              className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-            />
-            {errors?.expirationDate && (
-              <p className="text-red-600">{errors?.expirationDate?.message}</p>
-            )}
+            </Input>
           </div>
           <div className="flex-grow">
-            <label
-              htmlFor="cvcNumber"
-              className="text-m block font-medium mb-2 dark:text-white"
+            <Input
+              type="text"
+              name="cvcNumber"
+              autoComplete="cc-csc"
+              register={register}
+              errors={errors}
             >
               CVC
-            </label>
-            <input
-              type="text"
-              id="cvcNumber"
-              autoComplete="cc-csc"
-              {...register('cvcNumber')}
-              className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-            />
-            {errors?.cvcNumber && (
-              <p className="text-red-600">{errors?.cvcNumber?.message}</p>
-            )}
+            </Input>
           </div>
         </div>
       </fieldset>
@@ -216,79 +197,45 @@ export const CheckoutForm = () => {
         <legend>
           <FormHeader>Shipping address</FormHeader>
         </legend>
-        <label
-          htmlFor="company"
-          className="text-m block font-medium mb-2 dark:text-white"
-        >
+        <Input type="text" name="company" register={register} errors={errors}>
           Company
-        </label>
-        <input
+        </Input>
+        <Input
           type="text"
-          id="company"
-          {...register('company')}
-          className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-        />
-        <label
-          htmlFor="addressFirstLine"
-          className="text-m block font-medium mb-2 dark:text-white"
+          name="addressFirstLine"
+          register={register}
+          errors={errors}
         >
           Address
-        </label>
-        <input
+        </Input>
+        <Input
           type="text"
-          id="addressFirstLine"
-          {...register('addressFirstLine')}
-          className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-        />
-        <label
-          htmlFor="apartmentLine"
-          className="text-m block font-medium mb-2 dark:text-white"
+          name="apartmentLine"
+          register={register}
+          errors={errors}
         >
           Apartment, suite, etc.
-        </label>
-        <input
-          type="text"
-          id="apartmentLine"
-          {...register('apartmentLine')}
-          className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-        />
+        </Input>
         <div className="columns-3">
-          <label
-            htmlFor="city"
-            className="text-m block font-medium mb-2 dark:text-white"
-          >
+          <Input type="text" name="city" register={register} errors={errors}>
             City
-          </label>
-          <input
+          </Input>
+          <Input
             type="text"
-            id="city"
-            {...register('city')}
-            className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-          />
-          <label
-            htmlFor="stateProvince"
-            className="text-m block font-medium mb-2 dark:text-white"
+            name="stateProvince"
+            register={register}
+            errors={errors}
           >
             State / Province
-          </label>
-          <input
+          </Input>
+          <Input
             type="text"
-            id="stateProvince"
-            {...register('stateProvince')}
-            className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-          />
-          <label
-            htmlFor="postalCode"
-            className="text-m block font-medium mb-2 dark:text-white"
+            name="postalCode"
+            register={register}
+            errors={errors}
           >
             Postal code
-          </label>
-          <input
-            type="text"
-            id="postalCode"
-            {...register('postalCode')}
-            className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-          />
+          </Input>
         </div>
       </fieldset>
       <fieldset>
@@ -296,18 +243,15 @@ export const CheckoutForm = () => {
           <FormHeader>Billing information</FormHeader>
         </legend>
         <div className="container mx-auto">
-          <input
+          <Input
             type="checkbox"
-            id="sameAsShipping"
-            {...register('sameAsShipping')}
-            className="py-3 px-4 border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-          />
-          <label
-            htmlFor="sameAsShipping"
-            className="text-m block font-medium mb-2 dark:text-white ml-2"
+            name="sameAsShipping"
+            labelFirst={false}
+            register={register}
+            errors={errors}
           >
             Same as shipping information
-          </label>
+          </Input>
         </div>
       </fieldset>
       <button
