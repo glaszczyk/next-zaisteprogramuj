@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
-import { useForm } from 'react-hook-form';
+import { HTMLInputTypeAttribute, HTMLProps, ReactNode } from 'react';
+import { FieldErrors, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { InferType, addMethod, StringSchema } from 'yup';
+import { addMethod, InferType, StringSchema } from 'yup';
 
 const requiredValue = 'This value is required.';
 
@@ -11,6 +11,7 @@ declare module 'yup' {
     cardExpirationDate(errorMessage: string): StringSchema;
   }
 }
+
 addMethod(StringSchema, 'cardExpirationDate', function (errorMessage: string) {
   return this.test(`test-card-expiration-date`, function (value: string) {
     const { path, createError } = this;
@@ -28,6 +29,10 @@ addMethod(StringSchema, 'cardExpirationDate', function (errorMessage: string) {
 
 const checkoutFormDataScheme = yup
   .object({
+    myCustomEmail: yup
+      .string()
+      .email('Provide valid email address')
+      .required(requiredValue),
     emailAddress: yup.string().email().required(requiredValue),
     nameOnCard: yup.string().required(requiredValue),
     cardNumber: yup.string().required(requiredValue),
@@ -55,6 +60,39 @@ const FormHeader = ({ children }: { children: ReactNode }) => (
   <h2 className="text-2xl mt-8 mb-4">{children}</h2>
 );
 
+const ErrorMessage = ({ children }: { children: string }) => (
+  <p className="mt-2 text-red-600">{children}</p>
+);
+
+interface InputProps extends HTMLProps<HTMLInputElement> {
+  register: Function;
+  children: ReactNode;
+  name: string;
+  type: HTMLInputTypeAttribute;
+  errors: FieldErrors;
+}
+
+const Input = ({ register, name, children, errors, ...rest }: InputProps) => {
+  const fieldError = errors && errors[name];
+  const fieldErrorMessage = fieldError?.message as string;
+  return (
+    <>
+      <label
+        htmlFor={name}
+        className="text-m block font-medium mb-2 dark:text-white"
+      >
+        {children}
+      </label>
+      <input
+        {...register(name)}
+        {...rest}
+        className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+      />
+      <ErrorMessage>{fieldErrorMessage}</ErrorMessage>
+    </>
+  );
+};
+
 export const CheckoutForm = () => {
   const {
     register,
@@ -67,15 +105,21 @@ export const CheckoutForm = () => {
     console.log(data);
   });
 
-  const requiredValueError = (
-    <p className="mt-2 text-red-600">Required value</p>
-  );
   return (
     <form onSubmit={onFormSubmit}>
       <fieldset>
         <legend>
           <FormHeader>Contact information</FormHeader>
         </legend>
+        <Input
+          name="myCustomEmail"
+          errors={errors}
+          type="email"
+          placeholder="you@site.com"
+          register={register}
+        >
+          Custom email
+        </Input>
         <label
           htmlFor="emailAddress"
           className="text-m block font-medium mb-2 dark:text-white"
@@ -89,7 +133,9 @@ export const CheckoutForm = () => {
           placeholder="you@site.com"
           {...register('emailAddress')}
         />
-        {errors?.emailAddress && requiredValueError}
+        {errors?.emailAddress && (
+          <p className="mt-2 text-red-600">Required value</p>
+        )}
       </fieldset>
       <fieldset>
         <legend>
@@ -108,7 +154,9 @@ export const CheckoutForm = () => {
           {...register('nameOnCard')}
           className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
         />
-        {errors?.nameOnCard && requiredValueError}
+        {errors?.nameOnCard && (
+          <p className="mt-2 text-red-600">Required value</p>
+        )}
         <label
           htmlFor="cardNumber"
           className="text-m block font-medium mb-2 dark:text-white"
@@ -122,7 +170,9 @@ export const CheckoutForm = () => {
           {...register('cardNumber')}
           className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
         />
-        {errors?.cardNumber && requiredValueError}
+        {errors?.cardNumber && (
+          <p className="mt-2 text-red-600">Required value</p>
+        )}
         <div className="flex gap-4">
           <div className="flex-grow">
             <label
