@@ -1,10 +1,69 @@
-import { HTMLInputTypeAttribute, HTMLProps, ReactNode } from 'react';
+import {
+  HTMLInputTypeAttribute,
+  HTMLProps,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
 import { FieldErrors, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { addMethod, InferType, StringSchema } from 'yup';
+import { addMethod, InferType, setLocale, StringSchema } from 'yup';
 
 const requiredValue = 'This value is required.';
+
+interface TranslationLanguage {
+  default: string;
+  required: string;
+  lettersOnly: string;
+  incorrectValue: string;
+  incorrectMonth: string;
+  incorrectYear: string;
+  atLeastDigits: (value: string) => string;
+}
+
+type LocaleLanguage = 'en' | 'en-GB';
+
+const getTranslation = (locale: LocaleLanguage): TranslationLanguage => {
+  const translation: Record<LocaleLanguage, TranslationLanguage> = {
+    en: {
+      default: 'Invalid value',
+      required: 'This value is required',
+      lettersOnly: 'Only letters allowed',
+      incorrectValue: 'Wrong value',
+      incorrectMonth: 'Wrong month',
+      incorrectYear: 'Wrong year',
+      atLeastDigits: (value) => {
+        return `Should be ${value} digits long`;
+      },
+    },
+    'en-GB': {
+      default: 'Nieprawidłowa wartość',
+      required: 'Ta wartość jest wymagana',
+      lettersOnly: 'Dozwolone jedynie litery',
+      incorrectValue: 'Niepoprawna wartość',
+      incorrectMonth: 'Niepoprawny miesiąc',
+      incorrectYear: 'Niepoprawny rok',
+      atLeastDigits: (value) => {
+        return `Wymagana długość to ${value} cyfry`;
+      },
+    },
+  };
+  return translation[locale];
+};
+
+setLocale({
+  // use constant translation keys for messages without values
+  mixed: {
+    default: 'invalidField',
+  },
+  // use functions to generate an error object that includes the value from the schema
+  string: {
+    matches: (options) => ({
+      options,
+    }),
+  },
+});
 
 declare module 'yup' {
   interface StringSchema {
@@ -13,16 +72,28 @@ declare module 'yup' {
 }
 
 addMethod(StringSchema, 'cardExpirationDate', function (errorMessage: string) {
-  return this.test(`test-card-expiration-date`, function (value: string) {
+  return this.test(`testCardExpirationDate`, function (value: string) {
     const { path, createError } = this;
     if (value.length !== 5) {
-      return createError({ path, message: errorMessage });
+      return createError({
+        path,
+        type: 'incorrectValue',
+        message: errorMessage,
+      });
     }
     const [month, year] = value.split('/');
     if (Number.parseInt(month) > 12)
-      return createError({ path, message: 'Wrong month' });
+      return createError({
+        path,
+        type: 'incorrectMonth',
+        message: 'Wrong month',
+      });
     if (Number.parseInt(year) < new Date().getUTCFullYear() - 2000)
-      return createError({ path, message: 'Wrong year' });
+      return createError({
+        path,
+        type: 'incorrectYear',
+        message: 'Wrong year',
+      });
     return true;
   });
 });
@@ -34,15 +105,18 @@ const checkoutFormDataScheme = yup
       .email('Provide valid email address')
       .required(requiredValue),
     nameOnCard: yup.string().required(requiredValue),
-    cardNumber: yup.string().required(requiredValue),
+    cardNumber: yup
+      .string()
+      .required(requiredValue)
+      .matches(/^\d{12}$/, { message: '12', name: 'atLeastDigits' }),
     expirationDate: yup
       .string()
       .required(requiredValue)
-      .cardExpirationDate('Wrong value'),
+      .cardExpirationDate('Wrong Value'),
     cvcNumber: yup
       .string()
       .required(requiredValue)
-      .matches(/^\d\d\d/, 'Should be 3 digits long'),
+      .matches(/^\d\d\d/, { message: '3', name: 'atLeastDigits' }),
     company: yup.string(),
     addressFirstLine: yup.string(),
     apartmentLine: yup.string(),
@@ -87,14 +161,16 @@ const Input = ({
       <>
         <label
           htmlFor={name}
-          className="text-m block font-medium mb-2 dark:text-white"
+          className="text-m block font-medium mt-4 mb-2 dark:text-white"
         >
           {children}
         </label>
         <input
           {...register(name)}
           {...rest}
-          className="py-3 px-4 w-full border-gray-200 rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+          className={`${
+            fieldErrorMessage ? 'border-red-600' : 'border-gray-200'
+          } py-3 px-4 w-full  rounded-md text-m focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400`}
         />
         <ErrorMessage>{fieldErrorMessage}</ErrorMessage>
       </>
@@ -117,7 +193,35 @@ const Input = ({
   );
 };
 
+// @ts-ignore-next-line
+const translate = (translations, errors): FieldErrors<CheckoutFormData> => {
+  const getTranslationKey = (key: string) => {
+    const errorKey = errors[key].type;
+    return translations[errorKey];
+  };
+  return Object.keys(errors).reduce((acc, key) => {
+    if (typeof getTranslationKey(key) !== 'function')
+      return {
+        ...acc,
+        [key]: { ...errors[key], message: getTranslationKey(key) },
+      };
+    return {
+      ...acc,
+      [key]: {
+        ...errors[key],
+        message: getTranslationKey(key)(errors[key].message),
+      },
+    };
+  }, {});
+};
 export const CheckoutForm = () => {
+  const [locale, setLocale] = useState<LocaleLanguage>('en' as LocaleLanguage);
+  useEffect(() => {
+    setLocale(
+      ((window.navigator && navigator.language) as LocaleLanguage) ||
+        ('en' as LocaleLanguage)
+    );
+  }, []);
   const {
     register,
     handleSubmit,
@@ -129,6 +233,7 @@ export const CheckoutForm = () => {
     console.log(data);
   });
 
+  const translatedErrors = translate(getTranslation(locale), errors);
   return (
     <form onSubmit={onFormSubmit}>
       <fieldset>
@@ -137,7 +242,7 @@ export const CheckoutForm = () => {
         </legend>
         <Input
           name="emailAddress"
-          errors={errors}
+          errors={translatedErrors}
           type="email"
           placeholder="you@site.com"
           register={register}
@@ -153,7 +258,7 @@ export const CheckoutForm = () => {
           register={register}
           name="nameOnCard"
           type="text"
-          errors={errors}
+          errors={translatedErrors}
           autoComplete="cc-name"
         >
           Name on card
@@ -163,7 +268,7 @@ export const CheckoutForm = () => {
           name="cardNumber"
           autoComplete="cc-number"
           register={register}
-          errors={errors}
+          errors={translatedErrors}
         >
           Card number
         </Input>
@@ -175,7 +280,7 @@ export const CheckoutForm = () => {
               name="expirationDate"
               autoComplete="cc-exp"
               register={register}
-              errors={errors}
+              errors={translatedErrors}
             >
               Expiration date (MM/YY)
             </Input>
@@ -186,7 +291,7 @@ export const CheckoutForm = () => {
               name="cvcNumber"
               autoComplete="cc-csc"
               register={register}
-              errors={errors}
+              errors={translatedErrors}
             >
               CVC
             </Input>
@@ -204,7 +309,7 @@ export const CheckoutForm = () => {
           type="text"
           name="addressFirstLine"
           register={register}
-          errors={errors}
+          errors={translatedErrors}
         >
           Address
         </Input>
@@ -212,30 +317,36 @@ export const CheckoutForm = () => {
           type="text"
           name="apartmentLine"
           register={register}
-          errors={errors}
+          errors={translatedErrors}
         >
           Apartment, suite, etc.
         </Input>
-        <div className="columns-3">
-          <Input type="text" name="city" register={register} errors={errors}>
-            City
-          </Input>
-          <Input
-            type="text"
-            name="stateProvince"
-            register={register}
-            errors={errors}
-          >
-            State / Province
-          </Input>
-          <Input
-            type="text"
-            name="postalCode"
-            register={register}
-            errors={errors}
-          >
-            Postal code
-          </Input>
+        <div className="flex gap-4">
+          <div>
+            <Input type="text" name="city" register={register} errors={errors}>
+              City
+            </Input>
+          </div>
+          <div>
+            <Input
+              type="text"
+              name="stateProvince"
+              register={register}
+              errors={translatedErrors}
+            >
+              State / Province
+            </Input>
+          </div>
+          <div>
+            <Input
+              type="text"
+              name="postalCode"
+              register={register}
+              errors={translatedErrors}
+            >
+              Postal code
+            </Input>
+          </div>
         </div>
       </fieldset>
       <fieldset>
@@ -248,7 +359,7 @@ export const CheckoutForm = () => {
             name="sameAsShipping"
             labelFirst={false}
             register={register}
-            errors={errors}
+            errors={translatedErrors}
           >
             Same as shipping information
           </Input>
