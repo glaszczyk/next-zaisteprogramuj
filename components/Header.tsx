@@ -9,6 +9,7 @@ const links = [
   { label: 'SSG Products', href: '/product-list/1' },
   { label: 'CSR Products', href: '/csr-products' },
   { label: 'GraphQl Products', href: '/graphql-products' },
+  { label: 'Checkout', href: '/checkout' },
 ];
 
 type NavLinkProps = {
